@@ -163,7 +163,8 @@ Unmatched routes also return a `404` in this format, rather than Express's defau
 ## Design Decisions
 
 - **No `PUT` endpoint.** With only three updatable fields, `PATCH` already covers full updates; `PUT`'s only distinct behavior would be resetting `reviews`, which conflicts with the rule below.
-Titles can be changed freely until the first review. After reviews exist, only cosmetic changes (for example, capitalization or whitespace) are allowed.- **Unrated books are excluded from rating filters and sort last.** `getAverageRating()` returns `null` for books with no reviews, distinguishing "no data" from "a rating of zero."
+- Titles can be changed freely until the first review. After reviews exist, only cosmetic changes (for example, capitalization or whitespace) are allowed.
+- **Unrated books are excluded from rating filters and sort last.** `getAverageRating()` returns `null` for books with no reviews, distinguishing "no data" from "a rating of zero."
 - **Errors are centralized.** All routes forward errors via `next(err)` to a single `ApiError`-aware middleware, keeping response shape and status codes consistent across the API.
 - **File-backed storage.** Data resets if `books.json` is replaced or removed. This project intentionally uses a JSON file instead of a database to keep the focus on API design; see [Known Limitations](#known-limitations).
 
