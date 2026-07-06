@@ -1,0 +1,326 @@
+[
+  {
+    "id": 1,
+    "title": "The Pragmatic Programmer",
+    "genre": "Programming",
+    "reviews": [
+      {
+        "reviewId": 101,
+        "rating": 5,
+        "comment": "A timeless guide for software developers."
+      },
+      {
+        "reviewId": 102,
+        "rating": 4.8,
+        "comment": "Practical advice that still holds up today."
+      },
+      {
+        "reviewId": 103,
+        "rating": 4.9,
+        "comment": "Worth revisiting throughout your career."
+      }
+    ],
+    "price": 49.99
+  },
+  {
+    "id": 2,
+    "title": "Clean Code",
+    "genre": "Programming",
+    "reviews": [
+      {
+        "reviewId": 104,
+        "rating": 4.7,
+        "comment": "Excellent coding practices with useful examples."
+      },
+      {
+        "reviewId": 105,
+        "rating": 4.5,
+        "comment": "Some advice has aged, but the principles remain solid."
+      }
+    ],
+    "price": 42.5
+  },
+  {
+    "id": 3,
+    "title": "Design Patterns",
+    "genre": "Programming",
+    "reviews": [
+      {
+        "reviewId": 106,
+        "rating": 4.8,
+        "comment": "Dense but incredibly valuable."
+      }
+    ],
+    "price": 54.99
+  },
+  {
+    "id": 4,
+    "title": "Dune",
+    "genre": "Science Fiction",
+    "reviews": [
+      {
+        "reviewId": 107,
+        "rating": 5,
+        "comment": "Epic world-building and political intrigue."
+      },
+      {
+        "reviewId": 108,
+        "rating": 4.8,
+        "comment": "A slow start that pays off brilliantly."
+      },
+      {
+        "reviewId": 109,
+        "rating": 5,
+        "comment": "One of the greatest sci-fi novels ever written."
+      }
+    ],
+    "price": 18.99
+  },
+  {
+    "id": 5,
+    "title": "Foundation",
+    "genre": "Science Fiction",
+    "reviews": [
+      {
+        "reviewId": 110,
+        "rating": 4.6,
+        "comment": "A classic that shaped the genre."
+      },
+      {
+        "reviewId": 111,
+        "rating": 4.4,
+        "comment": "Ambitious ideas with memorable concepts."
+      }
+    ],
+    "price": 16.75
+  },
+  {
+    "id": 6,
+    "title": "The Hobbit",
+    "genre": "Fantasy",
+    "reviews": [
+      {
+        "reviewId": 112,
+        "rating": 4.8,
+        "comment": "A charming adventure from start to finish."
+      },
+      {
+        "reviewId": 113,
+        "rating": 5,
+        "comment": "Perfect introduction to Middle-earth."
+      }
+    ],
+    "price": 15.99
+  },
+  {
+    "id": 7,
+    "title": "The Name of the Wind",
+    "genre": "Fantasy",
+    "reviews": [
+      {
+        "reviewId": 114,
+        "rating": 4.7,
+        "comment": "Beautiful prose and memorable storytelling."
+      }
+    ],
+    "price": 21.5
+  },
+  {
+    "id": 8,
+    "title": "Atomic Habits",
+    "genre": "Self Help",
+    "reviews": [
+      {
+        "reviewId": 115,
+        "rating": 4.8,
+        "comment": "Simple ideas that make a real difference."
+      },
+      {
+        "reviewId": 116,
+        "rating": 4.9,
+        "comment": "One of the most actionable habit books available."
+      },
+      {
+        "reviewId": 117,
+        "rating": 4.6,
+        "comment": "Easy to read and easy to apply."
+      }
+    ],
+    "price": 17.99
+  },
+  {
+    "id": 9,
+    "title": "Deep Work",
+    "genre": "Productivity",
+    "reviews": [],
+    "price": 20
+  },
+  {
+    "id": 10,
+    "title": "The Psychology of Money",
+    "genre": "Finance",
+    "reviews": [
+      {
+        "reviewId": 118,
+        "rating": 4.8,
+        "comment": "Money is more about behavior than math."
+      },
+      {
+        "reviewId": 119,
+        "rating": 4.9,
+        "comment": "Great perspective on personal finance."
+      }
+    ],
+    "price": 19.99
+  },
+  {
+    "id": 11,
+    "title": "The Martian",
+    "genre": "Science Fiction",
+    "reviews": [
+      {
+        "reviewId": 120,
+        "rating": 4.8,
+        "comment": "Funny, tense, and scientifically grounded."
+      },
+      {
+        "reviewId": 121,
+        "rating": 4.7,
+        "comment": "An entertaining survival story."
+      }
+    ],
+    "price": 14.5
+  },
+  {
+    "id": 12,
+    "title": "To Kill a Mockingbird",
+    "genre": "Classic",
+    "reviews": [
+      {
+        "reviewId": 122,
+        "rating": 4.9,
+        "comment": "A masterpiece that still resonates today."
+      }
+    ],
+    "price": 13.99
+  },
+  {
+    "id": 13,
+    "title": "1984",
+    "genre": "Dystopian",
+    "reviews": [
+      {
+        "reviewId": 123,
+        "rating": 4.8,
+        "comment": "Chilling and thought-provoking."
+      },
+      {
+        "reviewId": 124,
+        "rating": 5,
+        "comment": "Still frighteningly relevant."
+      }
+    ],
+    "price": 12.95
+  },
+  {
+    "id": 14,
+    "title": "The Silent Patient",
+    "genre": "Thriller",
+    "reviews": [
+      {
+        "reviewId": 125,
+        "rating": 4.4,
+        "comment": "A suspenseful page-turner with a clever twist."
+      }
+    ],
+    "price": 16.25
+  },
+  {
+    "id": 15,
+    "title": "Sapiens",
+    "genre": "History",
+    "reviews": [
+      {
+        "reviewId": 126,
+        "rating": 4.7,
+        "comment": "A fascinating overview of human civilization."
+      },
+      {
+        "reviewId": 127,
+        "rating": 4.8,
+        "comment": "Thought-provoking from beginning to end."
+      }
+    ],
+    "price": 24.99
+  },
+  {
+    "id": 16,
+    "title": "The Alchemist",
+    "genre": "Fiction",
+    "reviews": [],
+    "price": 11.99
+  },
+  {
+    "id": 17,
+    "title": "The Lord of the Rings",
+    "genre": "Fantasy",
+    "reviews": [
+      {
+        "reviewId": 128,
+        "rating": 5,
+        "comment": "One of the greatest fantasy epics ever written."
+      },
+      {
+        "reviewId": 129,
+        "rating": 5,
+        "comment": "Every reread reveals something new."
+      },
+      { "reviewId": 130, "rating": 4.9, "comment": "An unforgettable journey." }
+    ],
+    "price": 34.99
+  },
+  {
+    "id": 18,
+    "title": "Educated",
+    "genre": "Memoir",
+    "reviews": [
+      {
+        "reviewId": 131,
+        "rating": 4.7,
+        "comment": "Powerful and deeply personal."
+      }
+    ],
+    "price": 18.5
+  },
+  {
+    "id": 19,
+    "title": "The Midnight Library",
+    "genre": "Fiction",
+    "reviews": [
+      {
+        "reviewId": 132,
+        "rating": 4.5,
+        "comment": "A thoughtful exploration of life's possibilities."
+      },
+      {
+        "reviewId": 133,
+        "rating": 4.3,
+        "comment": "Heartwarming with an interesting premise."
+      }
+    ],
+    "price": 15.75
+  },
+  {
+    "id": 20,
+    "title": "The Lean Startup",
+    "genre": "Business",
+    "reviews": [
+      {
+        "reviewId": 134,
+        "rating": 4.4,
+        "comment": "Essential reading for aspiring entrepreneurs."
+      }
+    ],
+    "price": 22.99
+  }
+]
