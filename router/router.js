@@ -176,6 +176,10 @@ router.patch("/:id", validate(schemas.idParamSchema, "params"),
             throw ApiError.notFound(`Book with ID ${id} not found`);
         }
 
+        if (isDefined(req.body.title) && book.reviews.length > 0) {
+            throw ApiError.conflict("Cannot change title of a book that already has reviews");
+        }
+
         if (isDefined(req.body.title)) {
             const matchExists = books.some(b => b.id !== id 
                                 && lower(b.title) === lower(req.body.title));
