@@ -9,6 +9,7 @@ const STORAGE_PATH = path.join(__dirname, "../storage", "books.json");
 
 const lower = (str) => str.toLowerCase();
 const isDefined = (data) => data !== undefined;
+export const normalize = (str) => str.trim().replace(/\s+/g, " ").toLowerCase();
 
 export default lower;
 

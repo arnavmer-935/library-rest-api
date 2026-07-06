@@ -4,7 +4,8 @@ import lower,
 { 
     paginate, fetchAllBooks, findByID, 
     getDataFromQuery, writeToStorage, 
-    removeBook, getNextBookID, getNextReviewID
+    removeBook, getNextBookID, getNextReviewID,
+    normalizeTitle
 
 } from "../services/utils.js";
 
@@ -176,19 +177,30 @@ router.patch("/:id", validate(schemas.idParamSchema, "params"),
             throw ApiError.notFound(`Book with ID ${id} not found`);
         }
 
-        if (isDefined(req.body.title) && book.reviews.length > 0) {
-            throw ApiError.conflict("Cannot change title of a book that already has reviews");
-        }
-
         if (isDefined(req.body.title)) {
-            const matchExists = books.some(b => b.id !== id 
-                                && lower(b.title) === lower(req.body.title));
 
-            if (matchExists) {
-                throw ApiError.conflict(`Book titled \"${title}\" already exists in database`);
+            const titleChanged = normalizeTitle(book.title) !== normalizeTitle(req.body.title);
+
+            if (titleChanged && book.reviews.length > 0) {
+                throw ApiError.conflict(
+                    "Cannot change title of a book that already has reviews"
+                );
             }
-            
+
+            if (titleChanged) {
+                const matchExists = books.some(
+                    b => b.id !== id &&
+                        normalize(b.title) === normalize(req.body.title)
+                );
+
+                if (matchExists) {
+                    throw ApiError.conflict(
+                        `Book titled "${req.body.title}" already exists in database`
+                    );
+                }
+            }
         }
+
         Object.assign(book, req.body);
 
         const patchedBooks = JSON.stringify(books);
@@ -204,7 +216,7 @@ router.patch("/:id", validate(schemas.idParamSchema, "params"),
     catch (err) {
         next(err);
     }
-})
+});
 
 
 router.delete("/:id", validate(schemas.idParamSchema, "params"), async (req, res, next) => {
