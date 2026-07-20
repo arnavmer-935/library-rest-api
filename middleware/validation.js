@@ -1,8 +1,9 @@
-import ApiError from "../services/apiError";
+import ApiError from "../services/apiError.js";
 
 const validate = (schema, target) => (req, res, next) => {
 
     const parsed = schema.safeParse(req[target]);
+    console.log(parsed) 
 
     if (!parsed.success) {
         const errorDetails = parsed.error.issues.map(issue => ({
@@ -14,7 +15,8 @@ const validate = (schema, target) => (req, res, next) => {
         return next(err);
     }
 
-    req[target] = parsed.data;
+    req.validated = req.validated || {};
+    req.validated[target] = parsed.data;
 
     next();
 

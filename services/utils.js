@@ -1,14 +1,14 @@
 import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
-import ApiError from "./apiError";
+import ApiError from "./apiError.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const STORAGE_PATH = path.join(__dirname, "../storage", "books.json");
 
 const lower = (str) => str.toLowerCase();
-const isDefined = (data) => data !== undefined;
+export const isDefined = (data) => data !== undefined;
 export const normalize = (str) => str.trim().replace(/\s+/g, " ").toLowerCase();
 
 export default lower;
@@ -46,13 +46,19 @@ export async function findByID(id) {
 
     const matchingIndex = data.findIndex(book => book.id === id);
 
-    if (matchingIndex === -1) throw ApiError.notfound(`Book with ID ${id} not found.`);
+    if (matchingIndex === -1) throw ApiError.notFound(`Book with ID ${id} not found.`);
 
     else return data[matchingIndex];
 
 }
 
 export function getDataFromQuery(data, queryParams) {
+
+    console.log("Inside controller for URL query parameters");
+
+    console.log("Here are the query params:\n");
+
+    console.log(queryParams);
 
     const { genre, sortBy, minPrice, maxPrice, 
         minAvgRating, maxAvgRating, order, page, limit } = queryParams;

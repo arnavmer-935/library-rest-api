@@ -5,7 +5,7 @@ import lower,
     paginate, fetchAllBooks, findByID, 
     getDataFromQuery, writeToStorage, 
     removeBook, getNextBookID, getNextReviewID,
-    normalizeTitle
+    normalize, isDefined
 
 } from "../services/utils.js";
 
@@ -22,7 +22,7 @@ router.get("/", validate(schemas.querySchema, "query"), async (req, res, next) =
 
         const data = await fetchAllBooks();
 
-        const {response, page, limit } = getDataFromQuery(data, req.query);
+        const {response, page, limit } = getDataFromQuery(data, req.validated.query);
 
         const paginatedResponse = paginate(response, page, limit);
 
@@ -41,7 +41,7 @@ router.get("/", validate(schemas.querySchema, "query"), async (req, res, next) =
 
 router.get("/:id", validate(schemas.idParamSchema, "params"), async (req, res, next) => {
 
-    const { id } = req.params;
+    const { id } = req.validated.params;
 
     try {
 
@@ -63,7 +63,7 @@ router.get("/:id", validate(schemas.idParamSchema, "params"), async (req, res, n
 
 router.get("/:id/reviews", validate(schemas.idParamSchema, "params"), async (req, res, next) => {
 
-    const { id } = req.params;
+    const { id } = req.validated.params;
 
     try {
 
@@ -71,7 +71,7 @@ router.get("/:id/reviews", validate(schemas.idParamSchema, "params"), async (req
 
         res.status(200).send({
             "success": true,
-            "message": `Found book with ${id}.`,
+            "message": `Found book with ID ${id}.`,
             "reviews": requiredBook.reviews
         });
 
@@ -124,7 +124,7 @@ router.post("/", validate(schemas.bookSchema, "body"), async (req, res, next) =>
 router.post("/:id/reviews", validate(schemas.idParamSchema, "params"), 
             validate(schemas.reviewSchema, "body"), async (req, res, next) => {
 
-    const { id } = req.params;
+    const { id } = req.validated.params;
 
     const { rating, comment } = req.body;
 
@@ -166,7 +166,7 @@ router.post("/:id/reviews", validate(schemas.idParamSchema, "params"),
 router.patch("/:id", validate(schemas.idParamSchema, "params"),
                     validate(schemas.bookPatchSchema, "body"), async (req, res, next) => {
 
-    const { id } = req.params;
+    const { id } = req.validated.params;
 
     try {
 
@@ -221,7 +221,7 @@ router.patch("/:id", validate(schemas.idParamSchema, "params"),
 
 router.delete("/:id", validate(schemas.idParamSchema, "params"), async (req, res, next) => {
 
-    const { id } = req.params;
+    const { id } = req.validated.params;
 
     try {
         await removeBook(id);
