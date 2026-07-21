@@ -24,15 +24,12 @@ export const querySchema = zod.object({
                 .trim()
                 .toLowerCase()
                 .pipe(
-                    zod.enum(["genre", "title", "price", "avgrating"])
+                    zod.enum(["genre", "title", "price"])
                 )
                 .default("title"),
     
     minPrice: zod.coerce.number().positive().optional(),
     maxPrice: zod.coerce.number().positive().optional(),
-    minAvgRating: zod.coerce.number().min(1).max(5).optional(),
-    maxAvgRating: zod.coerce.number().min(1).max(5).optional(),
-
     order: zod.string().trim().toLowerCase()
                 .pipe(
                     zod.enum(["asc", "desc"])
