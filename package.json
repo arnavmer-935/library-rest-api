@@ -6,7 +6,8 @@
   "scripts": {
     "test": "vitest run",
     "dev": "nodemon server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "tinker": "node scratch.js"
   },
   "keywords": [],
   "author": "",

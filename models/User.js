@@ -18,7 +18,7 @@ const Users = sequelize.define("users", {
           notEmpty: true,
           len: [3, 30],
           is: /^[A-Za-z0-9_]+$/i,
-        },
+        }
     },
 
     email: {
@@ -31,7 +31,7 @@ const Users = sequelize.define("users", {
         },
         set(value) {
             this.setDataValue("email", value.trim().toLowerCase());
-        },
+        }
     },
 
     passwordHash: {
@@ -40,16 +40,22 @@ const Users = sequelize.define("users", {
         field: "password_hash",
         validate: {
             notEmpty: true,
-        },
+        }
     },
 
     role: {
         type: DataTypes.ENUM("USER", "ADMIN"),
         allowNull: false,
-        defaultValue: "USER",
+        defaultValue: "USER"
     }
 },  {
       tableName: "users",
       timestamps: true,
       underscored: true,
-    })
+      createdAt: "created_at",
+      updatedAt: "updated_at"
+    });
+
+
+
+export default Users;

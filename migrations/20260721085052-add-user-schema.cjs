@@ -9,51 +9,50 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-      await queryInterface.createTable("users", {
-      id: {
+
+    await queryInterface.createTable("users", {
+      user_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
+        autoIncrement: true
       },
-
+      
       username: {
-        type: Sequelize.STRING(30),
-        allowNull: false,
-        unique: true,
+          type: Sequelize.STRING(30),
+          allowNull: false,
+          unique: true,
       },
-
+      
       email: {
-        type: Sequelize.STRING(255),
-        allowNull: false,
-        unique: true,
+          type: Sequelize.STRING(255),
+          allowNull: false,
+          unique: true,
       },
-
+      
       password_hash: {
-        type: Sequelize.STRING,
-        allowNull: false,
+          type: Sequelize.STRING,
+          allowNull: false
       },
-
+      
       role: {
-        type: Sequelize.ENUM("USER", "ADMIN"),
-        allowNull: false,
-        defaultValue: "USER",
+          type: Sequelize.ENUM("USER", "ADMIN"),
+          allowNull: false,
+          defaultValue: "USER"
       },
 
       created_at: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
+        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP")
       },
-
+      
       updated_at: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.literal(
-          "CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
-        ),
-      },
-    });
+        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP")
+      }
+    })
   },
 
   async down (queryInterface, Sequelize) {
@@ -66,5 +65,4 @@ module.exports = {
 
     await queryInterface.dropTable("users");
   }
-  
 };
