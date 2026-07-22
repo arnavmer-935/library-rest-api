@@ -5,16 +5,16 @@ import { getDataFromQuery } from "../services/utils";
 import { Users, Books, Reviews } from "../models/associations.js";
 import { isDefined } from "../services/utils";
 
-
 export const getBooks = async (req, res, next) => {
 
     try {
-        const options = getDataFromQuery(req.validated.query);
+        const options = getDataFromQuery(req.query);
         const books = await Books.findAll(options);
 
         return res.status(200).json({
-            success: true,
-            books
+            "success": true,
+            "message": `Fetched ${books.length} books from database`,
+            "books": books.dataValues
         });
     }
 
@@ -26,16 +26,23 @@ export const getBooks = async (req, res, next) => {
 
 export const getBookByID = async (req, res, next) => {
     try {
-        const { id } = req.validated.params;
-        const book = await Books.findByPk(id);
+        const { id } = req.params;
+
+        const book = await Books.findByPk(id, {
+            include: [{
+                model: Reviews,
+                as: "reviews"
+            }]
+        });
 
         if (!book) {
-            throw ApiError.notFound(`Book with ID ${id} not found.`);
+            throw ApiError.notFound(`Book with id ${id} not found.`);
         }
 
         return res.status(200).json({
-            success: true,
-            book
+            "success": true,
+            "message": `Book with id ${id} retrieved`,
+            "book": book.dataValues
         });
     }
 
@@ -44,41 +51,177 @@ export const getBookByID = async (req, res, next) => {
     }
 }
 
-export async function removeBook(id) {
+export const getReviewsByBookID = async (req, res, next) => {
 
-    const books = await fetchAllBooks();
+    try {
+        const { id } = req.params;
 
-    const removeIdx = books.findIndex(b => b.id === id);
+        const reviews = await Reviews.findAll({
+            where: {
+                book_id: id
+            }
+        });
 
-    if (removeIdx === -1) throw ApiError.notFound(`Book with ID ${id} not found.`,);
+        if (!reviews) {
+            throw ApiError.notFound(`Reviews not found for book with id ${id}`);
+        }
 
-    else {
-        books.splice(removeIdx, 1);
+        return res.status(200).json({
+            "success": true,
+            "message": `Reviews for book with id ${id} retrieved. Found ${reviews.length} reviews.`,
+            "reviews": reviews.dataValues
+        });
+    }
 
-        const newData = JSON.stringify(books);
-
-        await writeToStorage(newData);
-
+    catch (err) {
+        next(err);
     }
 
 }
 
-export async function removeBook(id) {
+export const createBook = async (req, res, next) => {
 
-    const books = await fetchAllBooks();
+    const { title, author, genre, price } = req.body;
 
-    const removeIdx = books.findIndex(b => b.id === id);
+    try {
 
-    if (removeIdx === -1) throw ApiError.notFound(`Book with ID ${id} not found.`,);
+        const createdBook = await Books.create({
+            title,
+            author,
+            genre,
+            price
+        });
 
-    else {
-        books.splice(removeIdx, 1);
+        if (!createdBook) {
+            throw ApiError.conflict(`Book titled \"${title}\" already exists in database`);
+        }
 
-        const newData = JSON.stringify(books);
+        return res.status(201).json({
+            "success": true,
+            "message": "Book created successfully",
+            "book-info": createdBook.dataValues
+        });
 
-        await writeToStorage(newData);
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const addReview = async (req, res, next) => {
+
+    const { id } = req.params;
+
+    const { userId, rating, comment } = req.body;
+
+    try {
+
+        const requiredBook = await Books.findByPk(id);
+
+        if (!requiredBook) {
+            throw ApiError.notFound(`Book with ID ${id} not found`);
+        }
+
+        const createdReview = await Reviews.create({
+            rating,
+            comment,
+            user_id: userId,
+            book_id: id
+        });
+
+        res.status(201).send({
+            "success": true,
+            "message": `Review added for book id ${id}`,
+            "review": createdReview.dataValues
+        });
 
     }
 
+    catch (err) {
+        next(err);
+    }
 }
+
+export const updateBookByID = async (req, res, next) => {
+
+    const { id } = req.params;
+
+    const { title, author, genre, price} = req.body;
+
+    try {
+
+        const requiredBook = await Books.findByPk(id, {
+            include: {
+                model: Reviews,
+                as: "reviews"
+            }
+        });
+
+        if (!requiredBook) {
+            throw ApiError.notFound(`Book with ID ${id} not found`);
+        }
+
+        if (isDefined(title)) {
+
+            if (requiredBook.dataValues.reviews.length > 0) {
+                throw ApiError.conflict("Cannot change title of a book that already has reviews");
+            }
+
+            else {
+                requiredBook.title = title;
+            }
+
+        }
+
+        if (isDefined(author)) {
+            requiredBook.author = author;
+        }
+
+        if (isDefined(genre)) {
+            requiredBook.genre = genre;
+        }
+
+        if (isDefined(price)) {
+            requiredBook.price = price;
+        }
+
+        await requiredBook.save();
+
+        res.status(200).send({
+            "success": true,
+            "message": `Updated book with ID ${id}`,
+            "updated-book": requiredBook
+        });
+
+    }
+
+    catch (err) {
+        next(err);
+    }
+};
+
+export const removeBookByID = async (req, res, next) => {
+
+    try {
+
+        const { id } = req.params;
+
+        const book = await Books.destroy({
+            where: {
+                book_id: id
+            }
+        });
+
+        return res.status(204).json({
+            "success": true,
+            "message": `Deleted Book with id ${id} successfully`
+        });
+
+    }
+
+    catch (err) {
+        next(err);
+    }
+
+}
+
 

@@ -2,7 +2,8 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import ApiError from "./services/apiError.js";
-import router from "./router/router.js";
+import bookRouter from "./router/router.js";
+import { Sequelize } from "sequelize";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -18,9 +19,31 @@ app.use((req, res, next) => {
 
 app.use((err, req, res, next) => {
 
+    console.error(err);
+
+    if (err instanceof SequelizeUniqueConstraintError) {
+
+        const path = err.errors[0].path;
+        const value = err.errors[0].value;
+        const message = err.errors[0].message;
+
+        err = ApiError.conflict("Book title already taken", { path, value, message });
+
+    }
+
+    if (err instanceof SequelizeValidationError) {
+
+        const path = err.errors[0].path;
+        const value = err.errors[0].value;
+        const message = err.errors[0].message;
+
+        err = ApiError.badRequest("Validation error in Database entry", { path, value, message});
+
+    }
+
     if (err instanceof ApiError) {
 
-        return res.status(err.code).send({
+        return res.status(err.code).json({
 
             "success": false,
             "error": {
@@ -31,19 +54,21 @@ app.use((err, req, res, next) => {
             }
 
         });
+
+    } else {
+
+        return res.status(500).json({
+            "success": false,
+            "error": {
+                "type": "InternalServerError",
+                "code": 500,
+                "message": "Something went wrong",
+                "details": null
+            }
+        });
+
     }
-
-    console.error(err);
-
-    res.status(500).send({
-        "success": false,
-        "error": {
-            "type": "InternalServerError",
-            "code": 500,
-            "message": "Something went wrong",
-            "details": null
-        }
-    });
+        
 
 });
 

@@ -1,4 +1,7 @@
 import sequelize from "../config/database.js";
+import Users from "./User.js";
+import Books from "./Book.js";
+
 import { DataTypes } from "sequelize";
 
 const Reviews = sequelize.define("Reviews", {
@@ -31,11 +34,21 @@ const Reviews = sequelize.define("Reviews", {
     user_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        references: {
+            model: Users,
+            key: "user_id"
+        },
+        onDelete: "CASCADE"
     },
 
     book_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        references: {
+            model: Books,
+            key: "book_id"
+        },
+        onDelete: "CASCADE"
     }
   
 },  

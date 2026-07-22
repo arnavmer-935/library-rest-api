@@ -7,12 +7,13 @@ const Books = sequelize.define("Books", {
         type: DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true,
-        autoIncrement: true
+        autoIncrement: true,
     },
 
     title: {
         type: DataTypes.STRING(255),
         allowNull: false,
+        unique: true,
         validate: {
           notEmpty: true,
           len: [1, 255]
@@ -51,7 +52,8 @@ const Books = sequelize.define("Books", {
     timestamps: true,
     underscored: true,
     createdAt: "created_at",
-    updatedAt: "updated_at"
+    updatedAt: "updated_at",
+    
 });
 
 export default Books;

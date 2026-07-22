@@ -1,3 +1,6 @@
+# Playground
+scratch.js
+
 # Dependencies
 node_modules/
 
@@ -16,6 +19,3 @@ Thumbs.db
 # Editor/IDE
 .vscode/
 .idea/
-
-# Playground
-scratch.js

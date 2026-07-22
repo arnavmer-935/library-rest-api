@@ -13,6 +13,10 @@ export default class ApiError extends Error {
         return new ApiError("Not Found", message, 404, details);
     }
 
+    static badRequest(message, details = null) {
+        return new ApiError("Bad Request", message, 400, details);
+    }
+
     static conflict(message, details = null) {
         return new ApiError("Conflict", message, 409, details);
     }

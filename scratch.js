@@ -151,3 +151,35 @@ const deleteUsers = async () => {
     }
 }
 
+// const createTest2 = async () => {
+//     try {
+
+//         const book1 = await Books.create({
+//             title: "lessgoo",
+//             author: "idkwho",
+//             genre: "mystery",
+//             price: 11.99
+//         });
+
+//         console.log("Inserted successfully");
+//         console.log(book1);
+//     }
+
+//     catch (err) {
+//         console.error(err);
+//     }
+// }
+
+const getTest = async () => {
+
+    try {
+        const res = await Books.findByPk(1);
+        console.log(res.dataValues);
+    }
+
+    catch (err) {
+        console.log(err);
+    }
+}
+
+getTest();

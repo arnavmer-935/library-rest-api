@@ -1,14 +1,15 @@
 import zod from "zod";
 
 export const reviewSchema = zod.object({
+    userId: zod.number().positive(),
     rating: zod.number().min(1).max(5),
     comment: zod.string().trim().min(1)
 });
 
 export const bookSchema = zod.object({
-    title: zod.string().trim().min(5),
-    genre: zod.string().trim().min(1),
-    reviews: zod.array(reviewSchema).default([]),
+    title: zod.string().trim().min(1),
+    author: zod.string().trim().min(2),
+    genre: zod.string().trim().min(2),
     price: zod.number().positive()
 });
 
