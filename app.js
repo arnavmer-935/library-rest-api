@@ -4,6 +4,7 @@ import morgan from "morgan";
 import ApiError from "./services/apiError.js";
 import bookRouter from "./router/router.js";
 import { Sequelize } from "sequelize";
+import { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -27,7 +28,16 @@ app.use((err, req, res, next) => {
         const value = err.errors[0].value;
         const message = err.errors[0].message;
 
-        err = ApiError.conflict("Book title already taken", { path, value, message });
+        let info;
+        if (new Set("username", "email", "title").has(path)) {
+            info = `${path} already exists`;
+        }
+
+        else {
+            info = `Unique constraint violated`;
+        }
+
+        err = ApiError.conflict(info, { path, value, message });
 
     }
 
@@ -39,6 +49,10 @@ app.use((err, req, res, next) => {
 
         err = ApiError.badRequest("Validation error in Database entry", { path, value, message});
 
+    }
+
+    if (err instanceof TokenExpiredError || err instanceof JsonWebTokenError) {
+        err = ApiError.unauthorized("Invalidcredentials: Expired JWT");
     }
 
     if (err instanceof ApiError) {
