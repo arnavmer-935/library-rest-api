@@ -170,16 +170,19 @@ const deleteUsers = async () => {
 //     }
 // }
 
-const getTest = async () => {
-
+const remTest = async () => {
     try {
-        const res = await Books.findByPk(1);
-        console.log(res.dataValues);
+
+        await Reviews.truncate();
+        await Books.truncate();
+        await Users.truncate();
+
+        console.log("Cleared tables");
     }
 
     catch (err) {
-        console.log(err);
+        console.error(err)
     }
-}
+};
 
-getTest();
+remTest();

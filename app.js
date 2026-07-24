@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(cors());
 app.use(morgan("dev"));
 
-app.use("/books", router);
+app.use("/api/v2/books", booksRouter);
 
 app.use((req, res, next) => {
     next(ApiError.notFound(`Route ${req.method} ${req.originalUrl} not found`));
