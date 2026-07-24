@@ -21,4 +21,12 @@ export default class ApiError extends Error {
         return new ApiError("Conflict", message, 409, details);
     }
 
+    static unauthorized(message, details = null) {
+        return new ApiError("Unauthorized", message, 401, details);
+    }
+
+    static forbidden(message, details = null) {
+        return new ApiError("Forbidden", message, 403, details);
+    }
+
 }
