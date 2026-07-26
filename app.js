@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
+import helmet from "helmet";
+
 import { Sequelize } from "sequelize";
 import { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
 
@@ -9,11 +11,14 @@ import gatewayRouter from "./routes/gateway.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
 app.use(express.json());
 app.use(cors());
 app.use(morgan("dev"));
+app.use(helmet());
 
-app.use("/api/v2/", gatewayRouter);
+
+app.use("/api/v1/", gatewayRouter);
 
 app.use((req, res, next) => {
     next(ApiError.notFound(`Route ${req.method} ${req.originalUrl} not found`));

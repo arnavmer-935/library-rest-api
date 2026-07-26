@@ -8,8 +8,11 @@ import ApiError from "../services/apiError.js";
 
 import * as reviewController from "../controllers/reviewController.js";
 import * as auth from "../middleware/authentication.js";
+import { writeLimiter } from "../middleware/rateLimit.js";
 
 const reviewRouter = Router();
+
+reviewRouter.use(writeLimiter);
 
 reviewRouter.patch(
   "/:id",
