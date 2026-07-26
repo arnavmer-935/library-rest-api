@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import ApiError from "../services/apiError";
+import Reviews from "../models/Review.js";
 
 dotenv.config();
 const unauthorizedError = () => ApiError.unauthorized("You are not authorized to access this resource");
@@ -48,4 +49,36 @@ export const requireAdmin = (req, res, next) => {
 
     next();
 
-}
+};
+
+export const requireReviewOwner = async (req, res, next) => {
+    if (!req.user) {
+        return next(ApiError.unauthorized("Missing user credentials"));
+    }
+    
+    const { id } = req.params;
+
+    try {
+        const review = await Reviews.findByPk(id);
+        if (!review) {
+            throw ApiError.notFound(`Review with ID ${id} not found`);
+        }
+    
+        const userId = review.user_id;
+    
+        if (userId !== req.user.id) {
+            throw ApiError.forbidden(`You do not have permission to modify this review`);
+        }
+
+        req.review = review;
+        
+        next();
+    }
+
+    catch (err) {
+        return next(err);
+    }
+
+};
+
+
