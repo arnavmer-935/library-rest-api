@@ -128,7 +128,7 @@ export const addReview = async (req, res, next) => {
             book_id: id
         });
 
-        res.status(201).send({
+        return res.status(201).send({
             "success": true,
             "message": `Review added for book id ${id}`,
             "review": createdReview.dataValues
@@ -186,7 +186,7 @@ export const updateBookByID = async (req, res, next) => {
 
         await requiredBook.save();
 
-        res.status(200).send({
+        return res.status(200).send({
             "success": true,
             "message": `Updated book with ID ${id}`,
             "updated-book": requiredBook

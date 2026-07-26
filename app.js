@@ -1,10 +1,11 @@
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
-import ApiError from "./services/apiError.js";
-import bookRouter from "./router/router.js";
 import { Sequelize } from "sequelize";
 import { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
+
+import ApiError from "./services/apiError.js";
+import gatewayRouter from "./routes/gateway.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -12,7 +13,7 @@ app.use(express.json());
 app.use(cors());
 app.use(morgan("dev"));
 
-app.use("/api/v2/books", booksRouter);
+app.use("/api/v2/", gatewayRouter);
 
 app.use((req, res, next) => {
     next(ApiError.notFound(`Route ${req.method} ${req.originalUrl} not found`));

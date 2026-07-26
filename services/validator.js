@@ -6,6 +6,15 @@ export const reviewSchema = zod.object({
     comment: zod.string().trim().min(1)
 });
 
+export const reviewPatchSchema = zod.object({
+    rating: zod.number().min(1).max(5).optional(),
+    comment: zod.string().trim().min(1).optional()
+    })
+    .refine(
+        data => data.rating !== undefined || data.comment !== undefined,
+        { message: "At least one field must be provided." }
+    );
+
 export const bookSchema = zod.object({
     title: zod.string().trim().min(1),
     author: zod.string().trim().min(2),
