@@ -4,8 +4,6 @@ const lower = (str) => str.toLowerCase();
 
 export const isDefined = (data) => data !== undefined;
 
-export const normalize = (str) => str.trim().replace(/\s+/g, " ").toLowerCase();
-
 export default lower;
 
 export function getDataFromQuery(queryParams) {
@@ -54,7 +52,19 @@ export function getDataFromQuery(queryParams) {
     options.limit = limit;
     options.offset = (page - 1) * limit;
 
-    console.log(options); //SUS
     return options;
+
+}
+
+export function getPaginationMetadata(query, count, length) {
+    const page = query.page;
+    const limit = query.limit;
+    const returned = length;
+    const total = count;
+    const pages = Math.ceil(count / limit);
+    const hasNextPage = page < pages;
+    const hasPreviousPage = page > 1;
+
+    return { page, limit, returned, total, pages, hasNextPage, hasPreviousPage };
 
 }

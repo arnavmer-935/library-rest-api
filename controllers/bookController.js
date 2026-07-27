@@ -3,18 +3,22 @@ import { Op } from "Sequelize";
 
 import { getDataFromQuery } from "../services/utils.js";
 import { Users, Books, Reviews } from "../models/associations.js";
-import { isDefined } from "../services/utils.js";
+import { isDefined, getPaginationMetadata } from "../services/utils.js";
+
+import ApiError from "../services/apiError.js";
 
 export const getBooks = async (req, res, next) => {
 
     try {
-        const options = getDataFromQuery(req.query);
-        const books = await Books.findAll(options);
+        const options = getDataFromQuery(req.validated.query);
+        const { count, rows: books } = await Books.findAndCountAll({...options, raw: true});
+        const pagination = getPaginationMetadata(req.validated.query, count, books.length);
 
         return res.status(200).json({
             "success": true,
             "message": `Fetched ${books.length} books from database`,
-            "books": books.dataValues
+            pagination,
+            books
         });
     }
 
@@ -26,7 +30,7 @@ export const getBooks = async (req, res, next) => {
 
 export const getBookByID = async (req, res, next) => {
     try {
-        const { id } = req.params;
+        const { id } = req.validated.params;
 
         const book = await Books.findByPk(id, {
             include: [{
@@ -42,7 +46,7 @@ export const getBookByID = async (req, res, next) => {
         return res.status(200).json({
             "success": true,
             "message": `Book with id ${id} retrieved`,
-            "book": book.dataValues
+            "book": book.toJSON()
         });
     }
 
@@ -54,7 +58,7 @@ export const getBookByID = async (req, res, next) => {
 export const getReviewsByBookID = async (req, res, next) => {
 
     try {
-        const { id } = req.params;
+        const { id } = req.validated.params;
 
         const reviews = await Reviews.findAll({
             where: {
@@ -81,7 +85,7 @@ export const getReviewsByBookID = async (req, res, next) => {
 
 export const createBook = async (req, res, next) => {
 
-    const { title, author, genre, price } = req.body;
+    const { title, author, genre, price } = req.validated.body;
 
     try {
 
@@ -109,9 +113,9 @@ export const createBook = async (req, res, next) => {
 
 export const addReview = async (req, res, next) => {
 
-    const { id } = req.params;
+    const { id } = req.validated.params;
 
-    const { userId, rating, comment } = req.body;
+    const { userId, rating, comment } = req.validated.body;
 
     try {
 
@@ -143,9 +147,9 @@ export const addReview = async (req, res, next) => {
 
 export const updateBookByID = async (req, res, next) => {
 
-    const { id } = req.params;
+    const { id } = req.validated.params;
 
-    const { title, author, genre, price} = req.body;
+    const { title, author, genre, price} = req.validated.body;
 
     try {
 
@@ -203,7 +207,7 @@ export const removeBookByID = async (req, res, next) => {
 
     try {
 
-        const { id } = req.params;
+        const { id } = req.validated.params;
 
         const book = await Books.destroy({
             where: {

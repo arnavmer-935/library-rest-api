@@ -3,7 +3,8 @@ import Books from "./Book.js";
 import Reviews from "./Review.js";
 
 Books.hasMany(Reviews, {
-    foreignKey: "book_id"
+    foreignKey: "book_id",
+    as: "reviews"
 });
 
 Reviews.belongsTo(Books, {
@@ -15,7 +16,8 @@ Reviews.belongsTo(Users, {
 });
 
 Users.hasMany(Reviews, {
-    foreignKey: "user_id"
+    foreignKey: "user_id",
+    as: "reviews"
 });
 
 export { Users, Books, Reviews };
