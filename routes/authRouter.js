@@ -15,6 +15,6 @@ authRouter.use(authLimiter);
 
 authRouter.post("/register", validate(schemas.authBodySchema, "body"), authController.registerUser);
 
-authRouter.post("/login", validate(schemas.loginSchema), "body", authController.loginUser);
+authRouter.post("/login", validate(schemas.loginSchem, "body"), authController.loginUser);
 
 export default authRouter;

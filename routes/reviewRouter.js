@@ -7,7 +7,7 @@ import * as schemas from "../services/validator.js";
 import ApiError from "../services/apiError.js";
 
 import * as reviewController from "../controllers/reviewController.js";
-import * as auth from "../middleware/authentication.js";
+import { authenticate, requireAdmin, requireReviewOwner } from "../middleware/authentication.js";
 import { writeLimiter } from "../middleware/rateLimit.js";
 
 const reviewRouter = Router();
@@ -17,8 +17,8 @@ reviewRouter.use(writeLimiter);
 reviewRouter.patch(
   "/:id",
   validate(schemas.idParamSchema, "params"),
-  auth.authenticate(),
-  auth.requireReviewOwner(),
+  authenticate,
+  requireReviewOwner,
   validate(schemas.reviewPatchSchema, "body"),
   reviewController.updateReviewByID
 );
@@ -26,9 +26,9 @@ reviewRouter.patch(
 reviewRouter.delete(
   "/:id",
   validate(schemas.idParamSchema, "params"),
-  auth.authenticate(),
-  auth.requireReviewOwner(),
-  reviewController.removeReviewByID
+  authenticate,
+  requireReviewOwner,
+  reviewController.deleteReviewByID
 );
 
 export default reviewRouter;

@@ -1,11 +1,11 @@
 import { Sequelize } from "sequelize";
-import { Op } from Sequelize;
+import { Op } from "sequelize";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
-import Users from "../models/User";
-import ApiError from "../services/apiError";
+import Users from "../models/User.js";
+import ApiError from "../services/apiError.js";
 
 dotenv.config();
 export const registerUser = async (req, res, next) => {
@@ -13,9 +13,9 @@ export const registerUser = async (req, res, next) => {
     const { username, email, password } = req.body;
     try {
 
-        const passwordHash = await bcrypt.hash(password, 10);
+        const passwdHash = await bcrypt.hash(password, 10);
         const registeredUser = await Users.create({
-            username, email, passwordHash
+            username, email, passwordHash: passwdHash
         });
 
         const { passwordHash, ...user } = registeredUser.get({ plain: true });

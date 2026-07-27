@@ -1,9 +1,9 @@
 import sequelize from "../config/database.js";
 import { Op } from "Sequelize";
 
-import { getDataFromQuery } from "../services/utils";
+import { getDataFromQuery } from "../services/utils.js";
 import { Users, Books, Reviews } from "../models/associations.js";
-import { isDefined } from "../services/utils";
+import { isDefined } from "../services/utils.js";
 
 export const getBooks = async (req, res, next) => {
 

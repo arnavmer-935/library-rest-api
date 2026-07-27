@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import ApiError from "../services/apiError";
+import ApiError from "../services/apiError.js";
 import Reviews from "../models/Review.js";
 
 dotenv.config();
@@ -76,7 +76,7 @@ export const requireReviewOwner = async (req, res, next) => {
     }
 
     catch (err) {
-        return next(err);
+        next(err);
     }
 
 };

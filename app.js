@@ -4,8 +4,7 @@ import morgan from "morgan";
 import helmet from "helmet";
 
 import { Sequelize } from "sequelize";
-import { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
-
+import jwt from "jsonwebtoken";
 import ApiError from "./services/apiError.js";
 import gatewayRouter from "./routes/gateway.js";
 
@@ -17,7 +16,6 @@ app.use(cors());
 app.use(morgan("dev"));
 app.use(helmet());
 
-
 app.use("/api/v1/", gatewayRouter);
 
 app.use((req, res, next) => {
@@ -28,7 +26,7 @@ app.use((err, req, res, next) => {
 
     console.error(err);
 
-    if (err instanceof SequelizeUniqueConstraintError) {
+    if (err instanceof Sequelize.UniqueConstraintError) {
 
         const path = err.errors[0].path;
         const value = err.errors[0].value;
@@ -47,7 +45,7 @@ app.use((err, req, res, next) => {
 
     }
 
-    if (err instanceof SequelizeValidationError) {
+    if (err instanceof Sequelize.ValidationError) {
 
         const path = err.errors[0].path;
         const value = err.errors[0].value;
@@ -57,7 +55,7 @@ app.use((err, req, res, next) => {
 
     }
 
-    if (err instanceof TokenExpiredError || err instanceof JsonWebTokenError) {
+    if (err instanceof jwt.TokenExpiredError || err instanceof jwt.JsonWebTokenError) {
         err = ApiError.unauthorized("Invalid credentials: Expired JWT");
     }
 

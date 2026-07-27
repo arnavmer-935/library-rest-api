@@ -7,7 +7,7 @@ import * as schemas from "../services/validator.js";
 import ApiError from "../services/apiError.js";
 
 import * as bookController from "../controllers/bookController.js";
-import * as auth from "../middleware/authentication.js";
+import { authenticate, requireAdmin, requireReviewOwner } from "../middleware/authentication.js";
 import { readLimiter, writeLimiter } from "../middleware/rateLimit.js";
 
 const bookRouter = Router();
@@ -36,8 +36,8 @@ bookRouter.get(
 bookRouter.post(
   "/",
   writeLimiter,
-  auth.authenticate(),
-  auth.requireAdmin(),
+  authenticate,
+  requireAdmin,
   validate(schemas.bookSchema, "body"),
   bookController.createBook,
 );
@@ -45,7 +45,7 @@ bookRouter.post(
 bookRouter.post(
   "/:id/reviews",
   writeLimiter,
-  auth.authenticate(),
+  authenticate,
   validate(schemas.idParamSchema, "params"),
   validate(schemas.reviewSchema, "body"),
   bookController.addReview,
@@ -54,8 +54,8 @@ bookRouter.post(
 bookRouter.patch(
   "/:id",
   writeLimiter,
-  auth.authenticate(),
-  auth.requireAdmin(),
+  authenticate,
+  requireAdmin,
   validate(schemas.idParamSchema, "params"),
   validate(schemas.bookPatchSchema, "body"),
   bookController.updateBookByID,
@@ -64,8 +64,8 @@ bookRouter.patch(
 bookRouter.delete(
   "/:id",
   writeLimiter,
-  auth.authenticate(),
-  auth.requireAdmin(),
+  authenticate,
+  requireAdmin,
   validate(schemas.idParamSchema, "params"),
   bookController.removeBookByID,
 );

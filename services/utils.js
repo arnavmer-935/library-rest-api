@@ -1,3 +1,4 @@
+import { where } from "sequelize";
 
 const lower = (str) => str.toLowerCase();
 
@@ -9,10 +10,14 @@ export default lower;
 
 export function getDataFromQuery(queryParams) {
 
-    const { genre, sortBy, minPrice, maxPrice, order, page, limit } = queryParams;
+    const { author, genre, sortBy, minPrice, maxPrice, order, limit, page } = queryParams;
 
     let whereClauses = {};
 
+    if (isDefined(author)) {
+        whereClauses.author = author;
+    }
+    
     if (isDefined(genre)) {
         whereClauses.genre = genre;
     }
@@ -29,20 +34,27 @@ export function getDataFromQuery(queryParams) {
         whereClauses.price = { [Op.lte] : maxPrice };
     }
 
-    orderClause = [
-        [sortBy, order.toUpperCase()]
-    ];
-
-    limitClause = limit;
-    offsetClause = (page - 1) * limit;
+    let orderClauses;
+    if (isDefined(sortBy)) {
+        orderClauses = [
+            [sortBy, isDefined(order) ? order.toUpperCase() : "ASC"]
+        ];
+    }
 
     let options = {};
 
-    options.where = whereClauses;
-    options.order = orderClauses;
-    options.limit = limitClause;
-    options.offset = offsetClause;
+    if (whereClauses){
+        options.where = whereClauses;
+    }
 
+    if (isDefined(orderClauses)) {
+        options.order = orderClauses;
+    }
+
+    options.limit = limit;
+    options.offset = (page - 1) * limit;
+
+    console.log(options); //SUS
     return options;
 
 }
