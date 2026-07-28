@@ -68,8 +68,11 @@ app.use((err, req, res, next) => {
 
     }
 
-    if (err instanceof jwt.TokenExpiredError || err instanceof jwt.JsonWebTokenError) {
-        err = ApiError.unauthorized("Invalid credentials: Expired JWT");
+    if (err instanceof jwt.TokenExpiredError) {
+        err = ApiError.unauthorized("JWT has expired. Please log in again.");
+    }
+    else if (err instanceof jwt.JsonWebTokenError) {
+        err = ApiError.unauthorized("Invalid JWT");
     }
 
     if (err instanceof ApiError) {

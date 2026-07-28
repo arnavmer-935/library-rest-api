@@ -10,7 +10,7 @@ import ApiError from "../services/apiError.js";
 dotenv.config();
 export const registerUser = async (req, res, next) => {
 
-    const { username, email, password } = req.body;
+    const { username, email, password } = req.validated.body;
     try {
 
         const passwdHash = await bcrypt.hash(password, 10);
@@ -34,7 +34,7 @@ export const registerUser = async (req, res, next) => {
 
 export const loginUser = async (req, res, next) => {
 
-    const { identifier, password } = req.body;
+    const { identifier, password } = req.validated.body;
 
     try {
 
@@ -44,20 +44,22 @@ export const loginUser = async (req, res, next) => {
                     username: identifier,
                     email: identifier
                 }
-            }
+            },
+
+            raw: true
         });
     
         if (!user) {
             throw ApiError.unauthorized("Invalid login credentials");
         }
 
-        const isPasswdMatch = await bcrypt.compare(password, user.get(passwordHash));
+        const isPasswdMatch = await bcrypt.compare(password, user.passwordHash);
 
         if (!isPasswdMatch) {
             throw ApiError.unauthorized("Invalid login credentials");
         }
 
-        const { user_id, role, passwordHash, ...userInfo } = user.get({ plain: true });
+        const { user_id, role, passwordHash, ...userInfo } = user;
 
         const token = jwt.sign({ user_id, role }, process.env.JWT_SECRET_KEY, {
             expiresIn: "24h"
@@ -66,7 +68,7 @@ export const loginUser = async (req, res, next) => {
         return res.status(200).json({
             "success": true,
             token,
-            "user": userInfo
+            "user": { user_id, ...userInfo }
         });
 
     }
