@@ -60,20 +60,35 @@ export const getReviewsByBookID = async (req, res, next) => {
     try {
         const { id } = req.validated.params;
 
+        const book = await Books.findByPk(id, { raw: true });
+
+        if (!book) {
+            throw ApiError.notFound(`Book with id ${id} does not exist in database`);
+        }
+
         const reviews = await Reviews.findAll({
             where: {
                 book_id: id
-            }
+            },
+
+            raw: true
         });
 
-        if (!reviews) {
-            throw ApiError.notFound(`Reviews not found for book with id ${id}`);
+        let message;
+        if (reviews.length == 0) {
+            message = `No reviews for found for book with id ${id}`;
+        }
+
+        else {
+            message = `Reviews for book with id ${id} retrieved. Found ${reviews.length} reviews.`;
         }
 
         return res.status(200).json({
             "success": true,
-            "message": `Reviews for book with id ${id} retrieved. Found ${reviews.length} reviews.`,
-            "reviews": reviews.dataValues
+            message,
+            "title": book.title,
+            "author": book.author,
+            reviews
         });
     }
 

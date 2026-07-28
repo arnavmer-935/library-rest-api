@@ -2,18 +2,31 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import helmet from "helmet";
+import fs from "fs";
+import path from "path";
+import jwt from "jsonwebtoken";
 
 import { Sequelize } from "sequelize";
-import jwt from "jsonwebtoken";
+
 import ApiError from "./services/apiError.js";
 import gatewayRouter from "./routes/gateway.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const accessLogStream = fs.createWriteStream(
+    path.join("logs", "access.log"),
+    { flags: "a" }
+);
+
+app.use(morgan("combined", {
+    stream: accessLogStream
+}));
+
+app.use(morgan("dev"));
+
 app.use(express.json());
 app.use(cors());
-app.use(morgan("dev"));
 app.use(helmet());
 
 app.use("/api/v1/", gatewayRouter);
