@@ -52,21 +52,23 @@ export const requireAdmin = (req, res, next) => {
 };
 
 export const requireReviewOwner = async (req, res, next) => {
+
     if (!req.user) {
         return next(ApiError.unauthorized("Missing user credentials"));
     }
     
-    const { id } = req.params;
+    const { id } = req.validated.params;
 
     try {
         const review = await Reviews.findByPk(id);
+
         if (!review) {
             throw ApiError.notFound(`Review with ID ${id} not found`);
         }
-    
-        const userId = review.user_id;
-    
-        if (userId !== req.user.id) {
+
+        const userId = review.getDataValue("user_id");
+
+        if (userId !== req.user.user_id) {
             throw ApiError.forbidden(`You do not have permission to modify this review`);
         }
 

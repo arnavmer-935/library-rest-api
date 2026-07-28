@@ -5,34 +5,28 @@ import { getDataFromQuery } from "../services/utils.js";
 import { Users, Books, Reviews } from "../models/associations.js";
 import { isDefined } from "../services/utils.js";
 
-export const updateReviewByID = async (req, res) => {
+export const updateReviewByID = async (req, res, next) => {
 
-    const reviewId = req.params.id;
+    const reviewId = req.validated.params.id;
 
     const { rating, comment } = req.body;
 
     try {
 
-        const requiredReview = await Reviews.findByPk(reviewId);
-
-        if (!requiredReview) {
-            throw ApiError.notFound(`Review with ID ${id} not found`);
-        }
-
         if (isDefined(rating)) {
-            requiredReview.rating = rating;
+            req.review.rating = rating;
         }
         
         if (isDefined(comment)) {
-            requiredReview.comment = comment;
+            req.review.comment = comment;
         }
 
-        await requiredReview.save();
+        await req.review.save();
 
         return res.status(200).send({
             "success": true,
-            "message": `Updated book with ID ${id}`,
-            "updated-review": requiredReview.dataValues
+            "message": `Updated review with ID ${reviewId}`,
+            "updated-review": req.review
         });
 
     }
