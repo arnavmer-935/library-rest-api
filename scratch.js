@@ -187,8 +187,13 @@
 
 // remTest();
 
-import authHeader from "./tests/helpers/authgen.js";
+import dotenv from "dotenv";
+import config from "./config/config.cjs";
 
-const user = { user_id: 17, role: "USER" };
+dotenv.config();
+const env = process.env.NODE_ENV || "development";
+const { database, username, passwd, host, port, dialect } = config[env];
 
-console.log(authHeader(user));
+console.log("DEBUG →", username, passwd ? "[password set]" : "[password MISSING]", database);
+
+console.log("CJS DEBUG →", config.test.password ? "[set]" : "[MISSING]");

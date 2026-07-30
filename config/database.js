@@ -3,9 +3,8 @@ import dotenv from "dotenv";
 import config from "./config.cjs";
 
 dotenv.config();
-
 const env = process.env.NODE_ENV || "development";
-const { database, username, passwd, host, port, dialect } = config[env];
+const { database, username, password, host, port, dialect } = config[env];
 
 const options = {
     host,
@@ -19,6 +18,6 @@ const options = {
     }
 };
 
-const sequelize = new Sequelize(database, username, passwd, options);
+const sequelize = new Sequelize(database, username, password, options);
 
 export default sequelize;
