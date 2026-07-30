@@ -1,14 +1,11 @@
 import { Sequelize } from "sequelize";
 import dotenv from "dotenv";
+import config from "./config.cjs";
 
 dotenv.config();
 
-const name = process.env.DB_NAME;
-const username = process.env.DB_USER;
-const passwd = process.env.DB_PASSWD;
-const host = process.env.DB_HOST;
-const port = process.env.DB_PORT;
-const dialect = process.env.DB_DIALECT;
+const env = process.env.NODE_ENV || "development";
+const { database, username, passwd, host, port, dialect } = config[env];
 
 const options = {
     host,
@@ -22,6 +19,6 @@ const options = {
     }
 };
 
-const sequelize = new Sequelize(name, username, passwd, options);
+const sequelize = new Sequelize(database, username, passwd, options);
 
 export default sequelize;
