@@ -1,7 +1,6 @@
 import zod, { email } from "zod";
 
 export const reviewSchema = zod.object({
-    userId: zod.number().positive(),
     rating: zod.number().min(1).max(5),
     comment: zod.string().trim().min(1)
 });

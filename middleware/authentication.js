@@ -82,3 +82,34 @@ export const requireReviewOwner = async (req, res, next) => {
     }
 
 };
+
+export const requireReviewOwnerOrAdmin = async (req, res, next) => {
+
+    if (!req.user) {
+        return next(ApiError.unauthorized("Missing user credentials"));
+    }
+    
+    const { id } = req.validated.params;
+
+    try {
+        const review = await Reviews.findByPk(id);
+
+        if (!review) {
+            throw ApiError.notFound(`Review with ID ${id} not found`);
+        }
+
+        const userId = review.getDataValue("user_id");
+
+        if (userId !== req.user.user_id && req.user.role !== "ADMIN") {
+            throw ApiError.forbidden(`You do not have permission to modify this review`);
+        }
+
+        req.review = review;
+        
+        next();
+    }
+
+    catch (err) {
+        next(err);
+    }
+}

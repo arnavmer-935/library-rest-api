@@ -1,4 +1,4 @@
-import { where } from "sequelize";
+import { where, Op } from "sequelize";
 
 const lower = (str) => str.toLowerCase();
 

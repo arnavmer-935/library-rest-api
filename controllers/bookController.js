@@ -1,5 +1,5 @@
 import sequelize from "../config/database.js";
-import { Op } from "Sequelize";
+import { Op } from "sequelize";
 
 import { getDataFromQuery } from "../services/utils.js";
 import { Users, Books, Reviews } from "../models/associations.js";
@@ -130,7 +130,7 @@ export const addReview = async (req, res, next) => {
 
     const { id } = req.validated.params;
 
-    const { userId, rating, comment } = req.validated.body;
+    const { rating, comment } = req.validated.body;
 
     try {
 
@@ -143,7 +143,7 @@ export const addReview = async (req, res, next) => {
         const createdReview = await Reviews.create({
             rating,
             comment,
-            user_id: userId,
+            user_id: req.user.user_id,
             book_id: id
         });
 

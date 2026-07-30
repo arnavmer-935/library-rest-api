@@ -1,5 +1,5 @@
 import sequelize from "../config/database.js";
-import { Op } from "Sequelize";
+import { Op } from "sequelize";
 
 import { getDataFromQuery } from "../services/utils.js";
 import { Users, Books, Reviews } from "../models/associations.js";

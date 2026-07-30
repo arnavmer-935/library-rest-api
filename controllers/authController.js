@@ -48,14 +48,10 @@ export const loginUser = async (req, res, next) => {
 
             raw: true
         });
+
+        const isPasswdMatch = await bcrypt.compare(password, user ? user.passwordHash : process.env.DUMMY_HASH);
     
-        if (!user) {
-            throw ApiError.unauthorized("Invalid login credentials");
-        }
-
-        const isPasswdMatch = await bcrypt.compare(password, user.passwordHash);
-
-        if (!isPasswdMatch) {
+        if (!user || !isPasswdMatch) {
             throw ApiError.unauthorized("Invalid login credentials");
         }
 
