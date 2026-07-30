@@ -9,21 +9,21 @@ const passwordHash = await bcrypt.hash(PASSWORD, 10);
 const seedAll = async () => {
     const alice = await Users.create({
         username: "alice",
-        email: "alice@example.com",
+        email: "alice@gmail.com",
         passwordHash,
         role: "USER"
     });
 
     const bob = await Users.create({
         username: "bob",
-        email: "bob@example.com",
+        email: "bob@yahoo.com",
         passwordHash,
         role: "USER"
     });
 
     const admin = await Users.create({
         username: "admin",
-        email: "admin@example.com",
+        email: "admin@hotmail.com",
         passwordHash,
         role: "ADMIN"
     });

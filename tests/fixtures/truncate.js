@@ -10,7 +10,7 @@ const truncateAll = async () => {
         await Reviews.truncate();
         await Books.truncate();
         await Users.truncate();
-        
+
     } finally {
         await sequelize.query("SET FOREIGN_KEY_CHECKS = 1");
     }
