@@ -43,6 +43,10 @@ const Books = sequelize.define("Books", {
         allowNull: false,
         validate: {
             min: 0.01
+        },
+
+        get() {
+            return parseFloat(this.getDataValue("price"))
         }
     }
   

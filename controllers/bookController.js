@@ -11,14 +11,14 @@ export const getBooks = async (req, res, next) => {
 
     try {
         const options = getDataFromQuery(req.validated.query);
-        const { count, rows: books } = await Books.findAndCountAll({...options, raw: true});
+        const { count, rows: books } = await Books.findAndCountAll(options);
         const pagination = getPaginationMetadata(req.validated.query, count, books.length);
 
         return res.status(200).json({
             "success": true,
             "message": `Fetched ${books.length} books from database`,
             pagination,
-            books
+            books: books.map(b => b.toJSON())
         });
     }
 
@@ -118,7 +118,7 @@ export const createBook = async (req, res, next) => {
         return res.status(201).json({
             "success": true,
             "message": "Book created successfully",
-            "book-info": createdBook.dataValues
+            "book-info": createdBook.toJSON()
         });
 
     } catch (err) {

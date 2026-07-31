@@ -1,9 +1,16 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import request from "supertest";
 import app from "../app.js";
 import { jwt } from "zod";
+import seedAll from "./fixtures/seed.js";
 
-describe("POST /api/v1/auth", () => {
+describe("Authentication - /api/v1/auth", () => {
+
+    let fixtures;
+
+    beforeEach(async () => {
+        fixtures = await seedAll();
+    });
 
     describe("POST /register", () => {
 

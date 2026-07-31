@@ -37,8 +37,6 @@ app.use((req, res, next) => {
 
 app.use((err, req, res, next) => {
 
-    console.error(err);
-
     if (err instanceof Sequelize.UniqueConstraintError) {
 
         const path = err.errors[0].path;
@@ -71,39 +69,17 @@ app.use((err, req, res, next) => {
     if (err instanceof jwt.TokenExpiredError) {
         err = ApiError.unauthorized("JWT has expired. Please log in again.");
     }
+
     else if (err instanceof jwt.JsonWebTokenError) {
         err = ApiError.unauthorized("Invalid JWT");
     }
+    
+    const error = ApiError.toJSON(err);
+    
+    console.error(error);
 
-    if (err instanceof ApiError) {
-
-        return res.status(err.code).json({
-
-            "success": false,
-            "error": {
-                "type": err.type,
-                "code": err.code,
-                "message": err.message,
-                "details": err.details
-            }
-
-        });
-
-    } else {
-
-        return res.status(500).json({
-            "success": false,
-            "error": {
-                "type": "InternalServerError",
-                "code": 500,
-                "message": "Something went wrong",
-                "details": null
-            }
-        });
-
-    }
+    return res.status(err.code).json(error);
         
-
 });
 
 export default app;

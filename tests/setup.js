@@ -4,8 +4,7 @@ import truncateAll  from "./fixtures/truncate.js";
 import seedAll from "./fixtures/seed.js";
 
 beforeEach(async () => {
-    await truncateAll();
-    await seedAll();
+    await truncateAll(); 
 });
 
 afterAll(async () => {
