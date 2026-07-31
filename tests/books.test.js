@@ -104,6 +104,80 @@ describe("Books — /api/v1/", () => {
             expect(body.books[0].price).toBeLessThanOrEqual(body.books[1].price);
 
         });
-    })
+    });
+
+    describe("GET /books/:id", () => {
+
+        it ("returns a book with its reviews, given an ID that exists in the database", async () => {
+
+            const id = fixtures.books.bookWithReviews.book_id;
+            const res = await request(app).get(`/api/v1/books/${id}`);
+            const body = res.body;
+
+            expect(res.status).toBe(200);
+            expect(body.success).toBe(true);
+            expect(body.book.reviews.length).toBeGreaterThanOrEqual(1);
+
+        });
+
+        it ("returns 404, given an ID that does not exist in the database", async () => {
+
+            const badId = fixtures.books.bookWithReviews.book_id + 999;
+            const res = await request(app).get(`/api/v1/books/${badId}`);
+            const body = res.body;
+
+            expect(res.status).toBe(404);
+            expect(body.success).toBe(false);
+
+        });
+
+        it ("returns 400, given a request parameter that is not a valid ID", async () => {
+
+            const res = await request(app).get("/api/v1/books/abc");
+            const body = res.body;
+            expect(res.status).toBe(400);
+            expect(body.success).toBe(false);
+            expect(body.error.type).toBe("ValidationError");
+
+        });
+    });
+
+    describe("GET /books/:id/reviews", () => {
+
+        it ("returns an empty array for a book with no reviews", async () => {
+
+            const id = fixtures.books.bookNoReviews.book_id;
+            const res = await request(app).get(`/api/v1/books/${id}/reviews`);
+            const body = res.body;
+
+            expect(res.status).toBe(200);
+            expect(body.reviews).toBeInstanceOf(Array).and.toHaveLength(0);
+
+        });
+
+        it ("returns 404 for a non-existent book ID", async () => {
+
+            const badId = fixtures.books.bookWithReviews.book_id + 999;
+            const res = await request(app).get(`/api/v1/books/${badId}/reviews`);
+            const body = res.body;
+
+            expect(res.status).toBe(404);
+            expect(body.success).toBe(false);
+
+        });
+
+        it ("returns an array of reviews, along with book title and author", async () => {
+
+            const id = fixtures.books.bookWithReviews.book_id;
+            const res = await request(app).get(`/api/v1/books/${id}/reviews`);
+            const body = res.body;
+
+            expect(res.status).toBe(200);
+            expect(body).toHaveProperty("title");
+            expect(body).toHaveProperty("author");
+            expect(body.reviews).toBeInstanceOf(Array).and.toHaveLength(1);
+
+        });
+    });
 
 });
