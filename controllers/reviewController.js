@@ -9,7 +9,7 @@ export const updateReviewByID = async (req, res, next) => {
 
     const reviewId = req.validated.params.id;
 
-    const { rating, comment } = req.body;
+    const { rating, comment } = req.validated.body;
 
     try {
 
@@ -46,10 +46,7 @@ export const deleteReviewByID = async (req, res, next) => {
         
         await review.destroy();
 
-        return res.status(200).send({
-            "success": true,
-            "message": `Deleted review with ID ${id}`
-        });
+        return res.status(200).send();
 
     }
 

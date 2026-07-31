@@ -46,7 +46,7 @@ app.use((err, req, res, next) => {
         const message = err.errors[0].message;
 
         let info;
-        if (new Set("username", "email", "title").has(path)) {
+        if (new Set(["username", "email", "title"]).has(path)) {
             info = `${path} already exists`;
         }
 

@@ -187,13 +187,22 @@
 
 // remTest();
 
-import dotenv from "dotenv";
-import config from "./config/config.cjs";
+// import dotenv from "dotenv";
+// import config from "./config/config.cjs";
 
-dotenv.config();
-const env = process.env.NODE_ENV || "development";
-const { database, username, passwd, host, port, dialect } = config[env];
+// dotenv.config();
+// const env = process.env.NODE_ENV || "development";
+// const { database, username, passwd, host, port, dialect } = config[env];
 
-console.log("DEBUG →", username, passwd ? "[password set]" : "[password MISSING]", database);
+// console.log("DEBUG →", username, passwd ? "[password set]" : "[password MISSING]", database);
 
-console.log("CJS DEBUG →", config.test.password ? "[set]" : "[MISSING]");
+// console.log("CJS DEBUG →", config.test.password ? "[set]" : "[MISSING]");
+
+// import truncateAll from "./tests/fixtures/truncate.js";
+// import Users from "./models/User.js";
+
+// process.env.NODE_ENV = "test"; // force test DB before anything imports
+
+// await truncateAll();
+// const remaining = await Users.findAll();
+// console.log("Users remaining after truncate:", remaining.length);
