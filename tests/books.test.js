@@ -2,7 +2,8 @@ import { describe, it, expect, beforeEach } from "vitest";
 import request from "supertest";
 import app from "../app.js";
 import seedAll from "./fixtures/seed.js";
-import { authHeader } from "./helpers/authgen.js";
+import authHeader from "./helpers/authgen.js";
+import Reviews from "../models/Review.js";
 
 describe("Books — /api/v1/", () => {
 
@@ -179,5 +180,231 @@ describe("Books — /api/v1/", () => {
 
         });
     });
+
+    describe("POST /books", () => {
+
+        
+        it ("allows authenticated admins to create books", async () => {
+            
+            const bookInfo = {
+                title: "A New Book",
+                author: "A new author",
+                genre: "Fiction",
+                price: 11.99
+            };
+            
+            const authorization = authHeader(fixtures.users.admin);
+            
+            const res = await request(app).post("/api/v1/books").send(bookInfo).set(authorization);
+            const body = res.body;
+            
+            expect(res.status).toBe(201);
+            expect(body).toHaveProperty("book");
+            expect(body.book.title).toBe("A New Book");
+            
+        });
+
+        it ("returns 403 Forbidden when a user tries creating a book", async () => {
+            
+            const bookInfo = {
+                title: "A New Book",
+                author: "A new author",
+                genre: "Fiction",
+                price: 11.99
+            };
+            
+            const authorization = authHeader(fixtures.users.alice);
+            
+            const res = await request(app).post("/api/v1/books").send(bookInfo).set(authorization);
+            const body = res.body;
+            
+            expect(res.status).toBe(403);
+            expect(body.error.type).toBe("Forbidden");
+            
+        });
+
+        it ("returns 401 when an unauthenticated user tries creating a book", async () => {
+
+            const bookInfo = {
+                title: "unauth title",
+                author: "john john doe",
+                genre: "fantasy",
+                price: 10.99
+            };
+
+            const res = await request(app).post("/api/v1/books").send(bookInfo);
+            const body = res.body;
+            
+            expect(res.status).toBe(401);
+            expect(body.error.type).toBe("Unauthorized");      
+        });
+        
+        it ("returns 409 when admin tries adding a book with an existing title", async () => {
+
+            const bookInfo = {
+                title: fixtures.books.bookWithReviews.title,
+                author: "A new author",
+                genre: "Fiction",
+                price: 11.99
+            };
+
+            const authorization = authHeader(fixtures.users.admin);
+
+            const res = await request(app).post("/api/v1/books").send(bookInfo).set(authorization);
+            const body = res.body;
+
+            expect(res.status).toBe(409);
+            expect(body.error.type).toBe("Conflict");
+
+        });
+
+        it ("returns 400 when admin tries adding a book with missing/invalid fields", async () => {
+
+            const bookInfo = {
+                title: "Bad Book",
+                author: "A new author",
+                genre: "Fiction",
+                price: -67
+            };
+
+            const authorization = authHeader(fixtures.users.admin);
+
+            const res = await request(app).post("/api/v1/books").send(bookInfo).set(authorization);
+            const body = res.body;
+
+            expect(res.status).toBe(400);
+            expect(body.error.type).toBe("ValidationError");
+
+        });
+
+    });
+
+    describe("PATCH /books/:id", () => {
+
+        it ("allows admin to update a non-title field on a book with NO reviews", async () => {
+
+            const id = fixtures.books.bookNoReviews.book_id;
+            const auth = authHeader(fixtures.users.admin);
+
+            const res = await request(app).patch(`/api/v1/books/${id}`).set(auth).send({ price: 19.99 });
+            const body = res.body;
+
+            expect(res.status).toBe(200);
+            expect(body.book.price).toBe(19.99);
+
+        });
+
+        it ("allows admin to update the title of a book with NO reviews", async () => {
+
+            const id = fixtures.books.bookNoReviews.book_id;
+            const auth = authHeader(fixtures.users.admin);
+
+            const res = await request(app).patch(`/api/v1/books/${id}`).set(auth).send({ title: "New Title" });
+            const body = res.body;
+
+            expect(res.status).toBe(200);
+            expect(body.book.title).toBe("New Title");
+
+        });
+
+        it ("returns 409 when an admin attempts to change the title of a book that HAS reviews", async () => {
+
+            const id = fixtures.books.bookWithReviews.book_id;
+            const auth = authHeader(fixtures.users.admin);
+
+            const res = await request(app).patch(`/api/v1/books/${id}`).set(auth).send({ title: "New Title" });
+            const body = res.body;
+
+            expect(res.status).toBe(409);
+            expect(body.error.type).toBe("Conflict");
+
+        });
+
+        it ("allows admin to change pricing of a book that HAS reviews", async () => {
+
+            const id = fixtures.books.bookWithReviews.book_id;
+            const auth = authHeader(fixtures.users.admin);
+
+            const res = await request(app).patch(`/api/v1/books/${id}`).set(auth).send({ price: 29.99 });
+            const body = res.body;
+
+            expect(res.status).toBe(200);
+            expect(body.book.price).toBe(29.99);
+            
+        });
+
+        it ("does not allow non-admin users to patch any parts of the book", async () => {
+
+            const id = fixtures.books.bookWithReviews.book_id;
+            const auth = authHeader(fixtures.users.alice);
+
+            const res = await request(app).patch(`/api/v1/books/${id}`).set(auth).send({ price: 29.99 });
+            const body = res.body;
+
+            expect(res.status).toBe(403);
+            expect(body.error.type).toBe("Forbidden");
+
+        });
+    });
+
+    describe("DELETE /books/:id", () => {
+
+        it ("allows admin to delete an existing book", async () => {
+
+            const id = fixtures.books.bookWithReviews.book_id;
+            const auth = authHeader(fixtures.users.admin);
+
+            const res = await request(app).delete(`/api/v1/books/${id}`).set(auth);
+
+            expect(res.status).toBe(204);
+            expect(res.body).toEqual({});
+
+        });
+
+        it ("returns 404 when an admin attempts to delete a book by non-existent id", async () => {
+            
+            const id = fixtures.books.bookWithReviews.book_id + 999;
+            const auth = authHeader(fixtures.users.admin);
+
+            const res = await request(app).delete(`/api/v1/books/${id}`).set(auth);
+
+            expect(res.status).toBe(404);
+            expect(res.body.error.type).toBe("Not Found");
+
+        });
+
+        it ("returns 403 Forbidden when a non-admin attempts to delete an existing book", async () => {
+
+            const id = fixtures.books.bookWithReviews.book_id;
+            const auth = authHeader(fixtures.users.alice);
+
+            const res = await request(app).delete(`/api/v1/books/${id}`).set(auth);
+
+            expect(res.status).toBe(403);
+            expect(res.body.error.type).toBe("Forbidden");
+
+        });
+
+        it ("deletes associated reviews when an existing book is deleted by admin", async () => {
+
+            const id = fixtures.books.bookWithReviews.book_id;
+            const auth = authHeader(fixtures.users.admin);
+
+            const res = await request(app).delete(`/api/v1/books/${id}`).set(auth);
+
+            const deletedBookReviews = await Reviews.findAll({
+                where: {
+                    book_id: id
+                },
+
+                raw: true
+            });
+
+            expect(res.status).toBe(204);
+            expect(res.body).toEqual({});
+            expect(deletedBookReviews).toHaveLength(0);
+
+        });
+    })
 
 });

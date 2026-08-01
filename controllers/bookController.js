@@ -118,7 +118,7 @@ export const createBook = async (req, res, next) => {
         return res.status(201).json({
             "success": true,
             "message": "Book created successfully",
-            "book-info": createdBook.toJSON()
+            "book": createdBook.toJSON()
         });
 
     } catch (err) {
@@ -208,7 +208,7 @@ export const updateBookByID = async (req, res, next) => {
         return res.status(200).send({
             "success": true,
             "message": `Updated book with ID ${id}`,
-            "updated-book": requiredBook
+            "book": requiredBook.toJSON()
         });
 
     }
@@ -230,10 +230,11 @@ export const removeBookByID = async (req, res, next) => {
             }
         });
 
-        return res.status(204).json({
-            "success": true,
-            "message": `Deleted Book with id ${id} successfully`
-        });
+        if (!book) {
+            throw ApiError.notFound(`Book with id ${id} not found`)
+        }
+
+        return res.status(204).json();
 
     }
 
