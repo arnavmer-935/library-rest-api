@@ -405,6 +405,6 @@ describe("Books — /api/v1/", () => {
             expect(deletedBookReviews).toHaveLength(0);
 
         });
-    })
+    });
 
 });

@@ -5,6 +5,11 @@ export default defineConfig({
         setupFiles: ["./tests/setup.js"],
         globals: false,
         fileParallelism: false,
-        testTimeout: 10000
+        testTimeout: 10000,
+        coverage: {
+            provider: "v8",
+            reporter: ["text", "html"],
+            reportsDirectory: "./coverage"
+        }
     }
 });
