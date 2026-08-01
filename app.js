@@ -62,7 +62,7 @@ app.use((err, req, res, next) => {
         const value = err.errors[0].value;
         const message = err.errors[0].message;
 
-        err = ApiError.badRequest("Validation error in Database entry", { path, value, message});
+        err = ApiError.badRequest("Validation error in Database entry", { path, value, message });
 
     }
 
@@ -73,13 +73,40 @@ app.use((err, req, res, next) => {
     else if (err instanceof jwt.JsonWebTokenError) {
         err = ApiError.unauthorized("Invalid JWT");
     }
-    
-    const error = ApiError.toJSON(err);
-    
-    console.error(error);
 
-    return res.status(err.code).json(error);
-        
+    if (err instanceof ApiError) {
+
+        console.error({
+            type: err.type,
+            code: err.code,
+            message: err.message,
+            details: err.details
+        });
+
+        return res.status(err.code).json({
+            "success": false,
+            "error": {
+                "type": err.type,
+                "code": err.code,
+                "message": err.message,
+                "details": err.details
+            }
+        });
+
+    }
+
+    
+    console.error(err);
+
+    return res.status(500).json({
+        "success": false,
+        "error": {
+            "type": "Internal Server Error",
+            "code": 500,
+            "message": "Something went wrong",
+            "details": null
+        }
+    });
+
 });
-
 export default app;

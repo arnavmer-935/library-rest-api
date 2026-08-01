@@ -28,25 +28,5 @@ export default class ApiError extends Error {
     static forbidden(message, details = null) {
         return new ApiError("Forbidden", message, 403, details);
     }
-
-    static toJSON(err) {
-
-        const type = err.type || "Internal Server Error";
-        const code = err.code;
-        const message = err.message || "Something went wrong";
-        const details = err.details || null;
-
-        return {
-
-            "success": false,
-            "error": {
-                type,
-                code,
-                message,
-                details
-            }
-
-        };
-    }
-
-}
+    
+};
