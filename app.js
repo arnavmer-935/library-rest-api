@@ -23,7 +23,7 @@ app.use(morgan("combined", {
     stream: accessLogStream
 }));
 
-//app.use(morgan("dev"));
+app.use(morgan("dev"));
 
 app.use(express.json());
 app.use(cors());
