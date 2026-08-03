@@ -19,6 +19,8 @@ app.use(express.json());
 app.use(cors());
 app.use(helmet());
 
+app.set("trust proxy", 1);
+
 app.use("/api/v1/", gatewayRouter);
 
 app.use((req, res, next) => {
