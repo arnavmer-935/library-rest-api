@@ -6,8 +6,7 @@
   "scripts": {
     "test": "cross-env NODE_ENV=test vitest run",
     "dev": "nodemon server.js",
-    "start": "node server.js",
-    "tinker": "node scratch.js"
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
