@@ -24,7 +24,7 @@ const config = {
   production: {
     username: process.env.PROD_DB_USER,
     password: process.env.PROD_DB_PASSWD,
-    database: process.env.PROD_PROD_DB_NAME,
+    database: process.env.PROD_DB_NAME,
     host: process.env.PROD_DB_HOST,
     port: process.env.PROD_DB_PORT,
     dialect: process.env.PROD_DB_DIALECT,
