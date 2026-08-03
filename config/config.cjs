@@ -9,7 +9,7 @@ const config = {
     database: process.env.DB_NAME,
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
-    dialect: process.env.DB_DIALECT,
+    dialect: "mysql",
   },
 
   test: {
@@ -18,7 +18,7 @@ const config = {
     database: process.env.TEST_DB_NAME,
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
-    dialect: process.env.DB_DIALECT,
+    dialect: "mysql",
   },
 
   production: {
@@ -27,7 +27,7 @@ const config = {
     database: process.env.PROD_DB_NAME,
     host: process.env.PROD_DB_HOST,
     port: process.env.PROD_DB_PORT,
-    dialect: process.env.PROD_DB_DIALECT,
+    dialect: "mysql",
   },
 };
 
