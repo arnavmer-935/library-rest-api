@@ -46,7 +46,7 @@ export const deleteReviewByID = async (req, res, next) => {
         
         await review.destroy();
 
-        return res.status(200).send();
+        return res.status(204).send();
 
     }
 

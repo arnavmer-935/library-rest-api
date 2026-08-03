@@ -1,0 +1,578 @@
+openapi: 3.0.3
+
+info:
+  title: Library REST API
+  version: 1.0.0
+  description: >
+    A REST API for managing a book catalog and user reviews, with JWT authentication
+    and role-based access control.
+
+servers:
+  - url: http://localhost:3000/api/v1
+    description: Local development
+
+tags:
+  - name: Auth
+  - name: Books
+  - name: Reviews
+
+security:
+  - bearerAuth: []
+
+paths:
+
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: Register a new user
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+      responses:
+        "201":
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  message: { type: string }
+                  user:
+                    $ref: "#/components/schemas/User"
+        "400":
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          description: Username or email already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Log in with a username or email
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  token: { type: string, description: "JWT to use as a Bearer token" }
+                  user:
+                    $ref: "#/components/schemas/User"
+        "400":
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /books:
+    get:
+      tags: [Books]
+      summary: List books, with optional filtering, sorting, and pagination
+      security: []
+      parameters:
+        - name: genre
+          in: query
+          schema: { type: string }
+          description: Case-insensitive exact match on genre
+        - name: minPrice
+          in: query
+          schema: { type: number }
+        - name: maxPrice
+          in: query
+          schema: { type: number }
+        - name: sortBy
+          in: query
+          schema: { type: string, enum: [genre, title, price] }
+        - name: order
+          in: query
+          schema: { type: string, enum: [asc, desc], default: asc }
+        - name: page
+          in: query
+          schema: { type: integer, minimum: 1, maximum: 10, default: 1 }
+        - name: limit
+          in: query
+          schema: { type: integer, default: 5 }
+      responses:
+        "200":
+          description: A paginated list of books
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  message: { type: string }
+                  pagination:
+                    $ref: "#/components/schemas/Pagination"
+                  books:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Book"
+        "400":
+          description: Invalid query parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    post:
+      tags: [Books]
+      summary: Create a new book (admin only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookRequest"
+      responses:
+        "201":
+          description: Book created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  book:
+                    $ref: "#/components/schemas/Book"
+        "400":
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Missing or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Authenticated but not an admin
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          description: A book with this title already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /books/{id}:
+    get:
+      tags: [Books]
+      summary: Get a single book, including its reviews
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/BookId"
+      responses:
+        "200":
+          description: The requested book
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  book:
+                    allOf:
+                      - $ref: "#/components/schemas/Book"
+                      - type: object
+                        properties:
+                          reviews:
+                            type: array
+                            items:
+                              $ref: "#/components/schemas/Review"
+        "400":
+          description: Invalid ID format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Book not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    patch:
+      tags: [Books]
+      summary: Update a book (admin only)
+      parameters:
+        - $ref: "#/components/parameters/BookId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookPatchRequest"
+      responses:
+        "200":
+          description: Book updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  book:
+                    $ref: "#/components/schemas/Book"
+        "400":
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Missing or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Authenticated but not an admin
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Book not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          description: Title change rejected because the book already has reviews
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    delete:
+      tags: [Books]
+      summary: Delete a book (admin only). Cascades to its reviews.
+      parameters:
+        - $ref: "#/components/parameters/BookId"
+      responses:
+        "204":
+          description: Book deleted
+        "401":
+          description: Missing or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Authenticated but not an admin
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Book not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /books/{id}/reviews:
+    get:
+      tags: [Reviews]
+      summary: List all reviews for a book
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/BookId"
+      responses:
+        "200":
+          description: Reviews for the given book
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  title: { type: string }
+                  author: { type: string }
+                  reviews:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Review"
+        "404":
+          description: Book not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    post:
+      tags: [Reviews]
+      summary: Add a review to a book
+      parameters:
+        - $ref: "#/components/parameters/BookId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReviewRequest"
+      responses:
+        "201":
+          description: Review created, attributed to the authenticated user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  review:
+                    $ref: "#/components/schemas/Review"
+        "400":
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Missing or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Book not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /reviews/{id}:
+    patch:
+      tags: [Reviews]
+      summary: Update a review (owner only, admins cannot edit others' reviews)
+      parameters:
+        - $ref: "#/components/parameters/ReviewId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReviewPatchRequest"
+      responses:
+        "200":
+          description: Review updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  updated-review:
+                    $ref: "#/components/schemas/Review"
+        "400":
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Missing or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Not the review's owner
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Review not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    delete:
+      tags: [Reviews]
+      summary: Delete a review (owner or admin)
+      parameters:
+        - $ref: "#/components/parameters/ReviewId"
+      responses:
+        "204":
+          description: Review deleted
+        "401":
+          description: Missing or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Not the review's owner or an admin
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Review not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    BookId:
+      name: id
+      in: path
+      required: true
+      schema: { type: integer }
+    ReviewId:
+      name: id
+      in: path
+      required: true
+      schema: { type: integer }
+
+  schemas:
+
+    User:
+      type: object
+      properties:
+        user_id: { type: integer }
+        username: { type: string }
+        email: { type: string }
+        role: { type: string, enum: [USER, ADMIN] }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    Book:
+      type: object
+      properties:
+        book_id: { type: integer }
+        title: { type: string }
+        author: { type: string }
+        genre: { type: string }
+        price: { type: number, format: float }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    Review:
+      type: object
+      properties:
+        review_id: { type: integer }
+        rating: { type: number, minimum: 1, maximum: 5 }
+        comment: { type: string }
+        user_id: { type: integer }
+        book_id: { type: integer }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    Pagination:
+      type: object
+      properties:
+        page: { type: integer }
+        limit: { type: integer }
+        returned: { type: integer }
+        total: { type: integer }
+        pages: { type: integer }
+        hasNextPage: { type: boolean }
+        hasPreviousPage: { type: boolean }
+
+    Error:
+      type: object
+      properties:
+        success: { type: boolean, example: false }
+        error:
+          type: object
+          properties:
+            type: { type: string }
+            code: { type: integer }
+            message: { type: string }
+            details:
+              nullable: true
+
+    RegisterRequest:
+      type: object
+      required: [username, email, password]
+      properties:
+        username: { type: string, minLength: 3 }
+        email: { type: string, format: email }
+        password: { type: string, minLength: 8 }
+
+    LoginRequest:
+      type: object
+      required: [identifier, password]
+      properties:
+        identifier: { type: string, description: "Username or email" }
+        password: { type: string }
+
+    BookRequest:
+      type: object
+      required: [title, author, genre, price]
+      properties:
+        title: { type: string }
+        author: { type: string, minLength: 2 }
+        genre: { type: string, minLength: 2 }
+        price: { type: number, minimum: 0.01 }
+
+    BookPatchRequest:
+      type: object
+      description: All fields optional; at least one must be provided.
+      properties:
+        title: { type: string }
+        author: { type: string }
+        genre: { type: string }
+        price: { type: number, minimum: 0.01 }
+
+    ReviewRequest:
+      type: object
+      required: [rating, comment]
+      properties:
+        rating: { type: number, minimum: 1, maximum: 5 }
+        comment: { type: string, minLength: 1 }
+
+    ReviewPatchRequest:
+      type: object
+      description: At least one of rating or comment must be provided.
+      properties:
+        rating: { type: number, minimum: 1, maximum: 5 }
+        comment: { type: string, minLength: 1 }
