@@ -3,8 +3,8 @@
 A REST API for managing a book catalog and user reviews, built with Node.js, Express, and MySQL. Includes JWT-based authentication, role-based access control, request validation, and a full automated test suite.
 
 ## Live Demo:
-- **API Base URL:** [https://your-api.onrender.com/api/v1](https://library-rest-api-j3ri.onrender.com/api/v1)
-- **Swagger Docs:** [https://your-api.onrender.com/api/v1/docs](https://library-rest-api-j3ri.onrender.com/api/v1/docs)
+- **API Base URL:** [https://library-rest-api-j3ri.onrender.com/api/v1](https://library-rest-api-j3ri.onrender.com/api/v1)
+- **Swagger Docs:** [https://library-rest-api-j3ri.onrender.com/api/v1/docs](https://library-rest-api-j3ri.onrender.com/api/v1/docs)
 - **Health Check:** [https://library-rest-api-j3ri.onrender.com/api/v1/health](https://library-rest-api-j3ri.onrender.com/api/v1/health)
 
 ## Features
