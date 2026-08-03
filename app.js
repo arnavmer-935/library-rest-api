@@ -13,15 +13,6 @@ import gatewayRouter from "./routes/gateway.js";
 
 const app = express();
 
-const LOG_STREAM = fs.createWriteStream(
-    path.join("logs", "access.log"),
-    { flags: "a" }
-);
-
-app.use(morgan("combined", {
-    stream: LOG_STREAM
-}));
-
 app.use(morgan("dev"));
 
 app.use(express.json());
