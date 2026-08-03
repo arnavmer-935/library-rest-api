@@ -160,7 +160,7 @@ describe("Reviews - /api/v1", () => {
                 .delete(`/api/v1/reviews/${reviewId}`)
                 .set(authHeader(fixtures.users.alice));
 
-            expect(res.status).toBe(200);
+            expect(res.status).toBe(204);
 
             const remaining = await Reviews.findByPk(reviewId);
             expect(remaining).toBeNull();
@@ -183,7 +183,7 @@ describe("Reviews - /api/v1", () => {
                 .delete(`/api/v1/reviews/${reviewId}`)
                 .set(authHeader(fixtures.users.admin));
 
-            expect(res.status).toBe(200);
+            expect(res.status).toBe(204);
 
             const remaining = await Reviews.findByPk(reviewId);
             expect(remaining).toBeNull();

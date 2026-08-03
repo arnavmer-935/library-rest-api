@@ -12,15 +12,14 @@ import ApiError from "./services/apiError.js";
 import gatewayRouter from "./routes/gateway.js";
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-const accessLogStream = fs.createWriteStream(
+const LOG_STREAM = fs.createWriteStream(
     path.join("logs", "access.log"),
     { flags: "a" }
 );
 
 app.use(morgan("combined", {
-    stream: accessLogStream
+    stream: LOG_STREAM
 }));
 
 app.use(morgan("dev"));
@@ -109,4 +108,5 @@ app.use((err, req, res, next) => {
     });
 
 });
+
 export default app;

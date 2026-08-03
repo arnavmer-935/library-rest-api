@@ -23,6 +23,7 @@ paths:
 
   /auth/register:
     post:
+      operationId: registerUser
       tags: [Auth]
       summary: Register a new user
       security: []
@@ -59,6 +60,7 @@ paths:
 
   /auth/login:
     post:
+      operationId: loginUser
       tags: [Auth]
       summary: Log in with a username or email
       security: []
@@ -95,6 +97,7 @@ paths:
 
   /books:
     get:
+      operationId: listBooks
       tags: [Books]
       summary: List books, with optional filtering, sorting, and pagination
       security: []
@@ -145,6 +148,7 @@ paths:
                 $ref: "#/components/schemas/Error"
 
     post:
+      operationId: createBook
       tags: [Books]
       summary: Create a new book (admin only)
       requestBody:
@@ -191,6 +195,7 @@ paths:
 
   /books/{id}:
     get:
+      operationId: getBookById
       tags: [Books]
       summary: Get a single book, including its reviews
       security: []
@@ -228,6 +233,7 @@ paths:
                 $ref: "#/components/schemas/Error"
 
     patch:
+      operationId: updateBook
       tags: [Books]
       summary: Update a book (admin only)
       parameters:
@@ -281,6 +287,7 @@ paths:
                 $ref: "#/components/schemas/Error"
 
     delete:
+      operationId: deleteBook
       tags: [Books]
       summary: Delete a book (admin only). Cascades to its reviews.
       parameters:
@@ -309,6 +316,7 @@ paths:
 
   /books/{id}/reviews:
     get:
+      operationId: getBookReviews
       tags: [Reviews]
       summary: List all reviews for a book
       security: []
@@ -337,6 +345,7 @@ paths:
                 $ref: "#/components/schemas/Error"
 
     post:
+      operationId: addReview
       tags: [Reviews]
       summary: Add a review to a book
       parameters:
@@ -379,6 +388,7 @@ paths:
 
   /reviews/{id}:
     patch:
+      operationId: updateReview
       tags: [Reviews]
       summary: Update a review (owner only, admins cannot edit others' reviews)
       parameters:
@@ -426,6 +436,7 @@ paths:
                 $ref: "#/components/schemas/Error"
 
     delete:
+      operationId: deleteReview
       tags: [Reviews]
       summary: Delete a review (owner or admin)
       parameters:
@@ -476,6 +487,7 @@ components:
 
     User:
       type: object
+      description: A registered user, without any sensitive credential fields.
       properties:
         user_id: { type: integer }
         username: { type: string }
@@ -486,6 +498,7 @@ components:
 
     Book:
       type: object
+      description: A book in the catalog.
       properties:
         book_id: { type: integer }
         title: { type: string }
@@ -497,6 +510,7 @@ components:
 
     Review:
       type: object
+      description: A user-submitted review attached to a book.
       properties:
         review_id: { type: integer }
         rating: { type: number, minimum: 1, maximum: 5 }
@@ -508,6 +522,7 @@ components:
 
     Pagination:
       type: object
+      description: Metadata describing the current page of a paginated list.
       properties:
         page: { type: integer }
         limit: { type: integer }
@@ -519,6 +534,7 @@ components:
 
     Error:
       type: object
+      description: The standard error response shape returned by every failed request.
       properties:
         success: { type: boolean, example: false }
         error:
@@ -528,10 +544,13 @@ components:
             code: { type: integer }
             message: { type: string }
             details:
+              type: object
               nullable: true
+              additionalProperties: true
 
     RegisterRequest:
       type: object
+      description: Payload required to register a new user.
       required: [username, email, password]
       properties:
         username: { type: string, minLength: 3 }
@@ -540,6 +559,7 @@ components:
 
     LoginRequest:
       type: object
+      description: Payload required to log in with a username or email.
       required: [identifier, password]
       properties:
         identifier: { type: string, description: "Username or email" }
@@ -547,6 +567,7 @@ components:
 
     BookRequest:
       type: object
+      description: Payload required to create a new book.
       required: [title, author, genre, price]
       properties:
         title: { type: string }
@@ -565,6 +586,7 @@ components:
 
     ReviewRequest:
       type: object
+      description: Payload required to add a review to a book.
       required: [rating, comment]
       properties:
         rating: { type: number, minimum: 1, maximum: 5 }
