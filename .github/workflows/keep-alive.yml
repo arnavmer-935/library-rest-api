@@ -10,4 +10,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Ping the API
-        run: curl -sf https://library-rest-api-j3ri.onrender.com/api/v1
+        run: curl -sf https://library-rest-api-j3ri.onrender.com/api/v1/health
