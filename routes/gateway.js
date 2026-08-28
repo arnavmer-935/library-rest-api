@@ -28,6 +28,7 @@ gatewayRouter.get("/", (_req, res) => {
             "name": "Library REST API",
             "status": "Online",
             "docs": "/api/v1/docs",
+            "note": "Hosted on Render's free tier. Initial requests after inactivity may take ~30-60 seconds."
         }
     });
 });
