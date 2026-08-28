@@ -3,13 +3,10 @@ import dotenv from "dotenv";
 import config from "./config.cjs";
 
 dotenv.config();
+
 const env = process.env.NODE_ENV || "development";
-const { database, username, password, host, port, dialect } = config[env];
 
 const options = {
-    host,
-    dialect,
-    port,
     pool: {
         max: 10,
         min: 0,
@@ -18,6 +15,21 @@ const options = {
     }
 };
 
-const sequelize = new Sequelize(database, username, password, options);
+let sequelize;
+
+if (env === "production" && process.env.MYSQL_PUBLIC_URL) {
+    sequelize = new Sequelize(process.env.MYSQL_PUBLIC_URL, {
+        dialect: "mysql",
+        ...options,
+    });
+} else {
+    const { database, username, password, host, port, dialect } = config[env];
+    sequelize = new Sequelize(database, username, password, {
+        host,
+        dialect,
+        port,
+        ...options,
+    });
+}
 
 export default sequelize;
