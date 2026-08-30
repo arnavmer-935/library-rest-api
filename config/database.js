@@ -19,7 +19,13 @@ let sequelize;
 
 if (env === "production" && process.env.MYSQL_PUBLIC_URL) {
     sequelize = new Sequelize(process.env.MYSQL_PUBLIC_URL, {
-        dialect: "mysql",
+        dialect: "postgres",
+        dialectOptions: { 
+            ssl: { 
+                require: true, 
+                rejectUnauthorized: false
+            } 
+        },
         ...options,
     });
 } else {

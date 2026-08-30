@@ -1,6 +1,6 @@
 # Library REST API
 
-A REST API for managing a book catalog and user reviews, built with Node.js, Express, and MySQL. Includes JWT-based authentication, role-based access control, request validation, and a full automated test suite.
+A REST API for managing a book catalog and user reviews, built with Node.js, Express, and PostgreSQL. Includes JWT-based authentication, role-based access control, request validation, and a full automated test suite.
 
 ## Live Demo:
 - **API Base URL:** [https://library-rest-api-j3ri.onrender.com/api/v1](https://library-rest-api-j3ri.onrender.com/api/v1)
@@ -34,7 +34,7 @@ Controllers  (business logic)
 Sequelize  (ORM layer)
   │
   ▼
-MySQL  (persistence)
+PostgreSQL  (persistence)
 ```
 
 Every request passes through the same middleware pipeline before reaching a controller, and every controller talks to the database exclusively through Sequelize models — no raw queries.
@@ -45,7 +45,7 @@ Every request passes through the same middleware pipeline before reaching a cont
 | Layer | Choice |
 |---|---|
 | Runtime | Node.js, Express |
-| Database | MySQL, via Sequelize |
+| Database | PostgreSQL, via Sequelize |
 | Validation | Zod |
 | Authentication | JSON Web Tokens, bcrypt for password hashing |
 | Testing | Vitest, Supertest |
@@ -73,7 +73,7 @@ Every request passes through the same middleware pipeline before reaching a cont
 
 ### Requirements
 
-Node.js and a running MySQL instance.
+Node.js and a running PostgreSQL instance.
 
 ### 1. Install dependencies
 
@@ -108,14 +108,14 @@ The API is available at `http://localhost:3000` (or whichever port is set).
 
 | Variable | Purpose |
 |---|---|
-| `DB_USER` | MySQL username |
-| `DB_PASSWD` | MySQL password |
+| `DB_USER` | PostgreSQL username |
+| `DB_PASSWD` | PostgreSQL password |
 | `DB_NAME` | Development database name |
 | `TEST_DB_NAME` | Separate database used only when running tests |
 | `PROD_DB_NAME` | Production database name |
-| `DB_HOST` | MySQL host |
-| `DB_PORT` | MySQL port |
-| `DB_DIALECT` | Database dialect (mysql) |
+| `DB_HOST` | PostgreSQL host |
+| `DB_PORT` | PostgreSQL port |
+| `DB_DIALECT` | Database dialect (postgresql) |
 | `JWT_SECRET_KEY` | Secret used to sign and verify JWTs |
 | `APP_PORT` | Port the server listens on |
 

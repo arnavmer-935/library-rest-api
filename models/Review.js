@@ -19,6 +19,9 @@ const Reviews = sequelize.define("Reviews", {
         validate: {
           min: 1,
           max: 5
+        },
+        get() {
+            return parseFloat(this.getDataValue("rating"))
         }
     },
 

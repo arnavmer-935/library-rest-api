@@ -150,7 +150,7 @@ export const addReview = async (req, res, next) => {
         return res.status(201).send({
             "success": true,
             "message": `Review added for book id ${id}`,
-            "review": createdReview.dataValues
+            "review": createdReview.toJSON()
         });
 
     }

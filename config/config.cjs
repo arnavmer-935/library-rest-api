@@ -9,7 +9,7 @@ const config = {
     database: process.env.DB_NAME,
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
-    dialect: "mysql",
+    dialect: "postgres",
   },
 
   test: {
@@ -18,7 +18,7 @@ const config = {
     database: process.env.TEST_DB_NAME,
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
-    dialect: "mysql",
+    dialect: "postgres",
   },
 
 	production: {
@@ -27,7 +27,7 @@ const config = {
 		    database: process.env.MYSQLDATABASE,
 		    host: process.env.MYSQLHOST,
 		    port: process.env.MYSQLPORT,
-		    dialect: "mysql",
+		    dialect: "postgres",
 	}
 };
 
