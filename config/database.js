@@ -15,11 +15,14 @@ const options = {
     }
 };
 
+const { database, username, password, host, port, dialect } = config[env];
 let sequelize;
 
-if (env === "production" && process.env.PUBLIC_URL) {
-    sequelize = new Sequelize(process.env.PUBLIC_URL, {
-        dialect: "postgres",
+if (env === "production") {
+    sequelize = new Sequelize(database, username, password, {
+        host,
+        port,
+        dialect,
         dialectOptions: { 
             ssl: { 
                 require: true, 
@@ -28,8 +31,8 @@ if (env === "production" && process.env.PUBLIC_URL) {
         },
         ...options,
     });
+    
 } else {
-    const { database, username, password, host, port, dialect } = config[env];
     sequelize = new Sequelize(database, username, password, {
         host,
         dialect,
