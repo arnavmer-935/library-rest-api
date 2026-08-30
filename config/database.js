@@ -17,8 +17,8 @@ const options = {
 
 let sequelize;
 
-if (env === "production" && process.env.MYSQL_PUBLIC_URL) {
-    sequelize = new Sequelize(process.env.MYSQL_PUBLIC_URL, {
+if (env === "production" && process.env.PUBLIC_URL) {
+    sequelize = new Sequelize(process.env.PUBLIC_URL, {
         dialect: "postgres",
         dialectOptions: { 
             ssl: { 
