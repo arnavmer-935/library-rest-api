@@ -2,10 +2,10 @@
 
 A REST API for managing a book catalog and user reviews, built with Node.js, Express, and PostgreSQL. Includes JWT-based authentication, role-based access control, request validation, and a full automated test suite.
 
-## Live Demo:
-- **API Base URL:** [https://library-rest-api-j3ri.onrender.com/api/v1](https://library-rest-api-j3ri.onrender.com/api/v1)
-- **Swagger Docs:** [https://library-rest-api-j3ri.onrender.com/api/v1/docs](https://library-rest-api-j3ri.onrender.com/api/v1/docs)
-- **Health Check:** [https://library-rest-api-j3ri.onrender.com/api/v1/health](https://library-rest-api-j3ri.onrender.com/api/v1/health)
+## Live Demo
+- **[API Base URL](https://library-rest-api-j3ri.onrender.com/api/v1)**
+- **[Swagger Docs](https://library-rest-api-j3ri.onrender.com/api/v1/docs)**
+- **[Health Check](https://library-rest-api-j3ri.onrender.com/api/v1/health)**
 
 ## Features
 
@@ -15,6 +15,17 @@ A REST API for managing a book catalog and user reviews, built with Node.js, Exp
 - Role-based access control (regular users vs. admins)
 - Request validation on every endpoint
 - Automated test suite with an isolated test database
+
+## API Highlights
+
+- RESTful CRUD operations for books and reviews
+- JWT authentication with role-based authorization
+- Ownership-based authorization for reviews
+- Filtering, sorting, and pagination
+- Zod request validation
+- PostgreSQL persistence through Sequelize
+- OpenAPI/Swagger documentation
+- 60 automated tests with 93.45% line coverage and 80.18% branch coverage
 
 ## Architecture Overview
 
@@ -50,6 +61,14 @@ Every request passes through the same middleware pipeline before reaching a cont
 | Authentication | JSON Web Tokens, bcrypt for password hashing |
 | Testing | Vitest, Supertest |
 
+## Deployment
+
+The API is deployed on Render with a managed PostgreSQL database.
+- **Application:** Render Web Service
+- **Database:** Render PostgreSQL
+- **ORM:** Sequelize
+- **Production schema:** Applied through Sequelize migrations
+- **Demo data:** Applied through Sequelize seeders
 
 ## Project Structure
 
@@ -60,6 +79,7 @@ Every request passes through the same middleware pipeline before reaching a cont
 ├── controllers/             # Route handlers
 ├── middleware/                # Auth, RBAC, validation, rate limiting
 ├── migrations/                  # Sequelize migrations
+├── seeders/                    # Production/demo data seeders
 ├── models/                        # Sequelize models and associations
 ├── routes/                          # Express routers
 ├── services/                          # Validation schemas, error class, query helpers
@@ -94,7 +114,7 @@ npx sequelize-cli db:create
 npx sequelize-cli db:migrate
 ```
 
-Migrations are used instead of syncing models directly, so the schema is defined explicitly and applied the same way across development, testing, and production, rather than relying on Sequelize to infer it at runtime.
+Migrations are used instead of syncing models directly, so the database schema is explicitly version-controlled and can be reproduced across development, testing, and production environments.
 
 ### 4. Start the server
 
@@ -112,7 +132,11 @@ The API is available at `http://localhost:3000` (or whichever port is set).
 | `DB_PASSWD` | PostgreSQL password |
 | `DB_NAME` | Development database name |
 | `TEST_DB_NAME` | Separate database used only when running tests |
+| `PROD_DB_USER` | Production PostgreSQL username |
+| `PROD_DB_PASSWD` | Production PostgreSQL password |
 | `PROD_DB_NAME` | Production database name |
+| `PROD_DB_HOST` | Production PostgreSQL host |
+| `PROD_DB_PORT` | Production PostgreSQL port |
 | `DB_HOST` | PostgreSQL host |
 | `DB_PORT` | PostgreSQL port |
 | `DB_DIALECT` | Database dialect (postgresql) |
