@@ -29,7 +29,7 @@ export const idParamSchema = zod.object({
 
 export const querySchema = zod.object({
     author: zod.string().trim().min(2).optional(),
-    genre: zod.string().trim().toLowerCase().min(1).optional(),
+    genre: zod.string().trim().min(1).optional(),
 
     sortBy: zod.string()
                 .trim()
